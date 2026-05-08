@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/Spinner";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
@@ -19,6 +20,7 @@ const DURATION_OPTIONS = [
 ];
 
 export default function ConfiguracoesPage() {
+  const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const { business, services, professionals, loading } = useBusiness(user?.id);
   const [blockForm, setBlockForm] = useState({
@@ -31,11 +33,15 @@ export default function ConfiguracoesPage() {
   const [blocking, setBlocking] = useState(false);
   const supabase = createClient();
 
-  if (authLoading || loading) return (
+  useEffect(() => {
+    if (!authLoading && !loading && !business) {
+      router.replace("/dashboard/onboarding");
+    }
+  }, [authLoading, loading, business, router]);
+
+  if (authLoading || loading || !business) return (
     <div className="flex items-center justify-center h-64"><Spinner size={32} /></div>
   );
-
-  if (!business) return null;
 
   async function handleBlock(e: React.FormEvent) {
     e.preventDefault();

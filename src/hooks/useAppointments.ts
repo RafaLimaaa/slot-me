@@ -10,7 +10,10 @@ export function useAppointments(businessId: string | undefined, date?: string) {
   const supabase = createClient();
 
   const fetch = useCallback(async () => {
-    if (!businessId) return;
+    if (!businessId) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
 
     let query = supabase

@@ -1,6 +1,7 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/Spinner";
 import { MetricsBar } from "@/components/dashboard/MetricsBar";
 import { AppointmentList } from "@/components/dashboard/AppointmentList";
@@ -11,22 +12,25 @@ import { useAppointments } from "@/hooks/useAppointments";
 import { useMetrics } from "@/hooks/useMetrics";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const { business, loading: bizLoading } = useBusiness(user?.id);
   const today = new Date().toISOString().slice(0, 10);
   const { appointments, loading: apptLoading, updateStatus } = useAppointments(business?.id, today);
   const { metrics, loading: metricsLoading } = useMetrics(business?.id);
 
-  if (authLoading || bizLoading) {
+  useEffect(() => {
+    if (!authLoading && !bizLoading && !business) {
+      router.replace("/dashboard/onboarding");
+    }
+  }, [authLoading, bizLoading, business, router]);
+
+  if (authLoading || bizLoading || (!business)) {
     return (
       <div className="flex items-center justify-center h-64">
         <Spinner size={32} />
       </div>
     );
-  }
-
-  if (!business) {
-    redirect("/dashboard/onboarding");
   }
 
   return (

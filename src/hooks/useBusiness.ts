@@ -29,20 +29,18 @@ export function useBusiness(ownerId: string | undefined) {
 
     setBusiness(biz);
 
-    const [{ data: svcs }, { data: profs }, { data: wh }] = await Promise.all([
+    const [{ data: svcs }, { data: profs }] = await Promise.all([
       supabase.from("services").select("*").eq("business_id", biz.id),
       supabase
         .from("professionals")
         .select("*, professional_services(service_id)")
         .eq("business_id", biz.id),
-      supabase
-        .from("working_hours")
-        .select("*")
-        .in(
-          "professional_id",
-          (profs ?? []).map((p: Professional) => p.id)
-        ),
     ]);
+
+    const profIds = (profs ?? []).map((p: Professional) => p.id);
+    const { data: wh } = profIds.length > 0
+      ? await supabase.from("working_hours").select("*").in("professional_id", profIds)
+      : { data: [] };
 
     setServices(svcs ?? []);
     setWorkingHours(wh ?? []);
