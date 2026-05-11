@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { ProfAvatar } from "@/components/dashboard/ProfAvatar";
 import { createClient } from "@/lib/supabase";
 import type { Service, ProfessionalWithServices } from "@/types";
 
@@ -143,11 +144,12 @@ export function ProfessionalsSection({ businessId, services, professionals, onRe
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-between text-sm">
-                <div>
+              <div className="flex items-center gap-3 text-sm">
+                <ProfAvatar profId={p.id} name={p.name} photoUrl={p.photo_url} onRefetch={onRefetch} />
+                <div className="flex-1 min-w-0">
                   <p className="text-[#fafafa]">{p.name}{p.specialty ? ` — ${p.specialty}` : ""}</p>
                   {p.services.length > 0 && (
-                    <p className="text-xs text-[#a1a1aa] mt-0.5">{p.services.map((s) => s.name).join(", ")}</p>
+                    <p className="text-xs text-[#a1a1aa] mt-0.5 truncate">{p.services.map((s) => s.name).join(", ")}</p>
                   )}
                 </div>
                 <div className="flex gap-2 shrink-0">
