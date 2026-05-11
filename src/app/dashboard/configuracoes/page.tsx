@@ -9,15 +9,6 @@ import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { useBusiness } from "@/hooks/useBusiness";
 import { createClient } from "@/lib/supabase";
-import type { ServiceFormData } from "@/types";
-
-const DURATION_OPTIONS = [
-  { value: 30, label: "30 min" },
-  { value: 45, label: "45 min" },
-  { value: 60, label: "1h" },
-  { value: 90, label: "1h30" },
-  { value: 120, label: "2h" },
-];
 
 export default function ConfiguracoesPage() {
   const router = useRouter();

@@ -25,6 +25,7 @@ const STEP_TITLES = [
 export function OnboardingFlow({ userId }: { userId: string }) {
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [businessData, setBusinessData] = useState<BusinessFormData | null>(null);
   const [hoursData, setHoursData] = useState<WorkingHoursFormData[]>([]);
   const [servicesData, setServicesData] = useState<ServiceFormData[]>([]);
@@ -34,6 +35,7 @@ export function OnboardingFlow({ userId }: { userId: string }) {
   async function handleFinish(professionals: ProfessionalFormData[]) {
     if (!businessData) return;
     setSaving(true);
+    setSaveError(null);
 
     const { data: business, error: bizError } = await supabase
       .from("businesses")
@@ -50,9 +52,13 @@ export function OnboardingFlow({ userId }: { userId: string }) {
       .select()
       .single();
 
-    if (bizError || !business) { setSaving(false); return; }
+    if (bizError || !business) {
+      setSaveError(`Erro ao salvar negócio: ${bizError?.message ?? "permissão negada"}`);
+      setSaving(false);
+      return;
+    }
 
-    const { data: insertedServices } = await supabase
+    const { data: insertedServices, error: svcError } = await supabase
       .from("services")
       .insert(
         servicesData.map((s) => ({
@@ -64,10 +70,13 @@ export function OnboardingFlow({ userId }: { userId: string }) {
       )
       .select();
 
-    if (!insertedServices) { setSaving(false); return; }
+    if (svcError || !insertedServices) {
+      setSaveError(`Erro ao salvar serviços: ${svcError?.message ?? "permissão negada"}`);
+      setSaving(false);
+      return;
+    }
 
-    const activeHours = hoursData.filter((h) => h.enabled);
-    const { data: insertedProfs } = await supabase
+    const { data: insertedProfs, error: profError } = await supabase
       .from("professionals")
       .insert(
         professionals.map((p) => ({
@@ -78,10 +87,14 @@ export function OnboardingFlow({ userId }: { userId: string }) {
       )
       .select();
 
-    if (!insertedProfs) { setSaving(false); return; }
+    if (profError || !insertedProfs) {
+      setSaveError(`Erro ao salvar profissionais: ${profError?.message ?? "permissão negada"}`);
+      setSaving(false);
+      return;
+    }
 
-    const whRows = insertedProfs.flatMap((prof, pi) => {
-      const profData = professionals[pi];
+    const activeHours = hoursData.filter((h) => h.enabled);
+    const whRows = insertedProfs.flatMap((prof) => {
       return activeHours.map((h) => ({
         professional_id: prof.id,
         day_of_week: h.day_of_week,
@@ -92,21 +105,36 @@ export function OnboardingFlow({ userId }: { userId: string }) {
       }));
     });
 
-    if (whRows.length) await supabase.from("working_hours").insert(whRows);
+    if (whRows.length) {
+      const { error: whError } = await supabase.from("working_hours").insert(whRows);
+      if (whError) {
+        setSaveError(`Erro ao salvar horários: ${whError.message}`);
+        setSaving(false);
+        return;
+      }
+    }
 
+    const svcMap = new Map(insertedServices.map((s, i) => [`svc-${i}`, s.id]));
     const psRows = insertedProfs.flatMap((prof, pi) => {
       const profData = professionals[pi];
       return profData.service_ids
         .map((key) => {
-          const idx = parseInt(key.replace("svc-", ""), 10);
-          return insertedServices[idx]
-            ? { professional_id: prof.id, service_id: insertedServices[idx].id }
-            : null;
+          const svcId = svcMap.get(key);
+          return svcId ? { professional_id: prof.id, service_id: svcId } : null;
         })
         .filter(Boolean);
     });
 
-    if (psRows.length) await supabase.from("professional_services").insert(psRows as { professional_id: string; service_id: string }[]);
+    if (psRows.length) {
+      const { error: psError } = await supabase
+        .from("professional_services")
+        .insert(psRows as { professional_id: string; service_id: string }[]);
+      if (psError) {
+        setSaveError(`Erro ao vincular serviços: ${psError.message}`);
+        setSaving(false);
+        return;
+      }
+    }
 
     router.push("/dashboard");
   }
@@ -122,6 +150,12 @@ export function OnboardingFlow({ userId }: { userId: string }) {
           <p className="text-sm text-[#6b7280] mb-3">{STEP_TITLES[step]}</p>
           <Progress value={((step + 1) / STEP_TITLES.length) * 100} />
         </div>
+
+        {saveError && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-[8px] text-sm text-red-700">
+            {saveError}
+          </div>
+        )}
 
         {step === 0 && (
           <StepBusiness
