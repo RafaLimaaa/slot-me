@@ -5,6 +5,11 @@ import { createClient } from "@/lib/supabase";
 import { getAvailableSlots } from "@/lib/availability";
 import type { WorkingHours, Appointment, BlockedPeriod } from "@/types";
 
+// Retorna YYYY-MM-DD no fuso local (evita virada de meia-noite UTC).
+function localDateStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 export function useAvailability(
   professionalId: string | null,
   date: string | null,
@@ -49,12 +54,20 @@ export function useAvailability(
 
       if (cancelled) return;
 
+      const now = new Date();
+      const todayStr = localDateStr(now);
+
+      // Para datas futuras, passa meia-noite do dia selecionado como referência —
+      // a antecedência de 60min só faz sentido se o slot for ainda hoje.
+      // Para o dia atual ou passado, usa o momento exato.
+      const currentDateTime = date! > todayStr ? new Date(date! + "T00:00:00") : now;
+
       const available = getAvailableSlots({
         workingHours: wh as WorkingHours | null,
         appointments: (appts ?? []) as Pick<Appointment, "start_time" | "end_time">[],
         blockedPeriods: (blocked ?? []) as Pick<BlockedPeriod, "start_time" | "end_time">[],
         serviceDuration,
-        currentDateTime: new Date(),
+        currentDateTime,
       });
 
       setSlots(available);
