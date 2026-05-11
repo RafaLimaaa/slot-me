@@ -97,8 +97,8 @@ export function StepServices({ initial, onNext, onBack }: Props) {
       </button>
 
       <div className="flex gap-3 mt-2">
-        <Button variant="secondary" onClick={onBack} className="flex-1">Voltar</Button>
-        <Button disabled={!canProceed} onClick={() => onNext(services)} className="flex-1">Próximo</Button>
+        <Button type="button" variant="secondary" onClick={onBack} className="flex-1">Voltar</Button>
+        <Button type="button" disabled={!canProceed} onClick={() => onNext(services)} className="flex-1">Próximo</Button>
       </div>
     </div>
   );

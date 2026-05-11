@@ -26,6 +26,8 @@ export function StepHours({ initial, onNext, onBack }: Props) {
     initial.length ? initial : DEFAULT_HOURS
   );
 
+  const hasEnabled = hours.some((h) => h.enabled);
+
   function update(index: number, field: keyof WorkingHoursFormData, value: string | boolean) {
     setHours((prev) =>
       prev.map((h, i) => (i === index ? { ...h, [field]: value } : h))
@@ -80,9 +82,15 @@ export function StepHours({ initial, onNext, onBack }: Props) {
         </div>
       ))}
 
+      {!hasEnabled && (
+        <p className="text-sm text-[#DC2626]">
+          Habilite pelo menos um dia de funcionamento.
+        </p>
+      )}
+
       <div className="flex gap-3 mt-2">
-        <Button variant="secondary" onClick={onBack} className="flex-1">Voltar</Button>
-        <Button onClick={() => onNext(hours)} className="flex-1">Próximo</Button>
+        <Button type="button" variant="secondary" onClick={onBack} className="flex-1">Voltar</Button>
+        <Button type="button" disabled={!hasEnabled} onClick={() => onNext(hours)} className="flex-1">Próximo</Button>
       </div>
     </div>
   );

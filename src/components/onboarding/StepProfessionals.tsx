@@ -111,8 +111,9 @@ export function StepProfessionals({ services, initial, onFinish, onBack, loading
       </button>
 
       <div className="flex gap-3 mt-2">
-        <Button variant="secondary" onClick={onBack} className="flex-1">Voltar</Button>
+        <Button type="button" variant="secondary" onClick={onBack} className="flex-1">Voltar</Button>
         <Button
+          type="button"
           disabled={!canFinish}
           loading={loading}
           onClick={() => onFinish(professionals)}
