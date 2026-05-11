@@ -80,7 +80,7 @@ export async function sendConfirmationToClient(
   appt: AppointmentWithDetails,
   business: Business,
   appUrl: string
-): Promise<void> {
+): Promise<{ error?: string }> {
   const cancelUrl = `${appUrl}/cancelar/${appt.cancel_token}`;
   const rescheduleUrl = `${appUrl}/reagendar/${appt.reschedule_token}`;
 
@@ -93,12 +93,22 @@ export async function sendConfirmationToClient(
       ${actionButton("Cancelar agendamento", cancelUrl, "secondary")}
     </div>`;
 
-  await resend.emails.send({
-    from: FROM,
-    to: appt.client_email,
-    subject: `Agendamento confirmado — ${business.name}`,
-    html: baseTemplate(content),
-  });
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: appt.client_email,
+      subject: `Agendamento confirmado — ${business.name}`,
+      html: baseTemplate(content),
+    });
+    if (error) {
+      console.error("[Resend] sendConfirmationToClient:", error);
+      return { error: "Falha ao enviar email de confirmação." };
+    }
+    return {};
+  } catch (e) {
+    console.error("[Resend] sendConfirmationToClient:", e);
+    return { error: "Falha ao enviar email de confirmação." };
+  }
 }
 
 // ─── Email de lembrete para o cliente ────────────────────────────────────────
@@ -107,7 +117,7 @@ export async function sendReminderToClient(
   appt: AppointmentWithDetails,
   business: Business,
   appUrl: string
-): Promise<void> {
+): Promise<{ error?: string }> {
   const cancelUrl = `${appUrl}/cancelar/${appt.cancel_token}`;
   const rescheduleUrl = `${appUrl}/reagendar/${appt.reschedule_token}`;
 
@@ -120,12 +130,22 @@ export async function sendReminderToClient(
       ${actionButton("Cancelar agendamento", cancelUrl, "secondary")}
     </div>`;
 
-  await resend.emails.send({
-    from: FROM,
-    to: appt.client_email,
-    subject: `Lembrete — seu agendamento é amanhã`,
-    html: baseTemplate(content),
-  });
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: appt.client_email,
+      subject: `Lembrete — seu agendamento é amanhã`,
+      html: baseTemplate(content),
+    });
+    if (error) {
+      console.error("[Resend] sendReminderToClient:", error);
+      return { error: "Falha ao enviar email de lembrete." };
+    }
+    return {};
+  } catch (e) {
+    console.error("[Resend] sendReminderToClient:", e);
+    return { error: "Falha ao enviar email de lembrete." };
+  }
 }
 
 // ─── Email de novo agendamento para o dono ────────────────────────────────────
@@ -134,7 +154,7 @@ export async function sendNewAppointmentToOwner(
   appt: AppointmentWithDetails,
   business: Business,
   ownerEmail: string
-): Promise<void> {
+): Promise<{ error?: string }> {
   const content = `
     <h2 style="margin:0 0 8px;color:#09090b;font-size:22px;font-weight:700;">Novo agendamento</h2>
     <p style="margin:0;color:#6b7280;font-size:15px;">Um novo agendamento foi realizado por <strong style="color:#09090b;">${appt.client_name}</strong>.</p>
@@ -145,12 +165,22 @@ export async function sendNewAppointmentToOwner(
       <tr><td style="padding:4px 0;color:#6b7280;font-size:14px;">Email</td><td style="padding:4px 0;color:#09090b;font-size:14px;font-weight:500;">${appt.client_email}</td></tr>
     </table>`;
 
-  await resend.emails.send({
-    from: FROM,
-    to: ownerEmail,
-    subject: `Novo agendamento — ${appt.client_name}`,
-    html: baseTemplate(content),
-  });
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: ownerEmail,
+      subject: `Novo agendamento — ${appt.client_name}`,
+      html: baseTemplate(content),
+    });
+    if (error) {
+      console.error("[Resend] sendNewAppointmentToOwner:", error);
+      return { error: "Falha ao notificar o dono do negócio." };
+    }
+    return {};
+  } catch (e) {
+    console.error("[Resend] sendNewAppointmentToOwner:", e);
+    return { error: "Falha ao notificar o dono do negócio." };
+  }
 }
 
 // ─── Email de cancelamento para o dono ───────────────────────────────────────
@@ -159,7 +189,7 @@ export async function sendCancellationToOwner(
   appt: AppointmentWithDetails,
   business: Business,
   ownerEmail: string
-): Promise<void> {
+): Promise<{ error?: string }> {
   const content = `
     <h2 style="margin:0 0 8px;color:#09090b;font-size:22px;font-weight:700;">Agendamento cancelado</h2>
     <p style="margin:0;color:#6b7280;font-size:15px;"><strong style="color:#09090b;">${appt.client_name}</strong> cancelou o agendamento.</p>
@@ -169,10 +199,20 @@ export async function sendCancellationToOwner(
       <tr><td style="padding:4px 0;color:#6b7280;font-size:14px;">Telefone</td><td style="padding:4px 0;color:#09090b;font-size:14px;font-weight:500;">${appt.client_phone}</td></tr>
     </table>`;
 
-  await resend.emails.send({
-    from: FROM,
-    to: ownerEmail,
-    subject: `Agendamento cancelado — ${appt.client_name}`,
-    html: baseTemplate(content),
-  });
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to: ownerEmail,
+      subject: `Agendamento cancelado — ${appt.client_name}`,
+      html: baseTemplate(content),
+    });
+    if (error) {
+      console.error("[Resend] sendCancellationToOwner:", error);
+      return { error: "Falha ao enviar notificação de cancelamento." };
+    }
+    return {};
+  } catch (e) {
+    console.error("[Resend] sendCancellationToOwner:", e);
+    return { error: "Falha ao enviar notificação de cancelamento." };
+  }
 }

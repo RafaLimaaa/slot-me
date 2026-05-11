@@ -41,7 +41,7 @@ export function useAvailability(
           .maybeSingle(),
         supabase
           .from("appointments")
-          .select("start_time,end_time")
+          .select("start_time,end_time,status")
           .eq("professional_id", professionalId)
           .eq("date", date)
           .eq("status", "scheduled"),

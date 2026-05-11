@@ -33,7 +33,8 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
   const [updating, setUpdating] = useState(false);
 
   const days = weekDays(weekOffset);
-  const toISO = (d: Date) => d.toISOString().slice(0, 10);
+  const toISO = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
   const filtered = appointments.filter(
     (a) =>

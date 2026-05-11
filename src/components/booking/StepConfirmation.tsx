@@ -2,6 +2,15 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import type { BookingFormData } from "@/types";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function formatPhone(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+  if (digits.length <= 2) return digits.length ? `(${digits}` : "";
+  if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+}
+
 interface Props {
   form: BookingFormData;
   onChangeClient: (field: "clientName" | "clientPhone" | "clientEmail", value: string) => void;
@@ -20,6 +29,15 @@ export function StepConfirmation({ form, onChangeClient, onConfirm, loading }: P
         month: "long",
       })
     : "";
+
+  const phoneDigits = form.clientPhone.replace(/\D/g, "");
+  const isPhoneValid = phoneDigits.length >= 10 && phoneDigits.length <= 11;
+  const isEmailValid = EMAIL_REGEX.test(form.clientEmail);
+
+  const showPhoneError = form.clientPhone.length > 0 && !isPhoneValid;
+  const showEmailError = form.clientEmail.length > 0 && !isEmailValid;
+
+  const canConfirm = !!form.clientName && isPhoneValid && isEmailValid;
 
   return (
     <div className="flex flex-col md:flex-row gap-6">
@@ -48,24 +66,35 @@ export function StepConfirmation({ form, onChangeClient, onConfirm, loading }: P
           value={form.clientName}
           onChange={(e) => onChangeClient("clientName", e.target.value)}
         />
-        <Input
-          label="Telefone"
-          type="tel"
-          required
-          value={form.clientPhone}
-          onChange={(e) => onChangeClient("clientPhone", e.target.value)}
-        />
-        <Input
-          label="Email"
-          type="email"
-          required
-          value={form.clientEmail}
-          onChange={(e) => onChangeClient("clientEmail", e.target.value)}
-        />
+        <div className="flex flex-col gap-1">
+          <Input
+            label="Telefone"
+            inputMode="numeric"
+            required
+            placeholder="(00) 00000-0000"
+            value={form.clientPhone}
+            onChange={(e) => onChangeClient("clientPhone", formatPhone(e.target.value))}
+          />
+          {showPhoneError && (
+            <p className="text-xs text-[#DC2626]">Informe um telefone válido com 10 ou 11 dígitos.</p>
+          )}
+        </div>
+        <div className="flex flex-col gap-1">
+          <Input
+            label="Email"
+            type="email"
+            required
+            value={form.clientEmail}
+            onChange={(e) => onChangeClient("clientEmail", e.target.value)}
+          />
+          {showEmailError && (
+            <p className="text-xs text-[#DC2626]">Informe um email válido.</p>
+          )}
+        </div>
         <Button
           className="w-full mt-2"
           loading={loading}
-          disabled={!form.clientName || !form.clientPhone || !form.clientEmail}
+          disabled={!canConfirm}
           onClick={onConfirm}
         >
           Confirmar agendamento

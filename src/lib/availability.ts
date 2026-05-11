@@ -46,10 +46,12 @@ export function getAvailableSlots({
   const cutoff = nowMinutes + MIN_ADVANCE_MINUTES;
 
   const busyIntervals = [
-    ...appointments.map((a) => ({
-      start: timeToMinutes(a.start_time),
-      end: timeToMinutes(a.end_time),
-    })),
+    ...appointments
+      .filter((a) => !a.status || a.status === "scheduled")
+      .map((a) => ({
+        start: timeToMinutes(a.start_time),
+        end: timeToMinutes(a.end_time),
+      })),
     ...blockedPeriods.map((b) => ({
       start: timeToMinutes(b.start_time),
       end: timeToMinutes(b.end_time),

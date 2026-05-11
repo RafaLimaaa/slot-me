@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { getAvailableSlots } from "@/lib/availability";
-import type { WorkingHours, Appointment, BlockedPeriod } from "@/types";
+import type { WorkingHours, Appointment, BlockedPeriod, AppointmentStatus } from "@/types";
 
 type AppointmentSlice = Pick<Appointment, "start_time" | "end_time">;
 type BlockedSlice = Pick<BlockedPeriod, "start_time" | "end_time">;
@@ -224,6 +224,30 @@ describe("agendamentos de outros profissionais não afetam", () => {
   it("slots permanecem disponíveis quando appointments está vazio", () => {
     const slots = getAvailableSlots(makeInput({ appointments: [] }));
     expect(slots.length).toBeGreaterThan(0);
+  });
+});
+
+// ─── Agendamento cancelado não bloqueia slot ──────────────────────────────────
+
+describe("agendamento cancelado não bloqueia slot", () => {
+  it("slot 10:00 disponível quando agendamento está cancelado", () => {
+    const appointment = {
+      start_time: "10:00:00",
+      end_time: "10:30:00",
+      status: "cancelled" as AppointmentStatus,
+    };
+    const slots = getAvailableSlots(makeInput({ appointments: [appointment] }));
+    expect(slots).toContain("10:00");
+  });
+
+  it("slot 10:00 bloqueado quando agendamento está scheduled", () => {
+    const appointment = {
+      start_time: "10:00:00",
+      end_time: "10:30:00",
+      status: "scheduled" as AppointmentStatus,
+    };
+    const slots = getAvailableSlots(makeInput({ appointments: [appointment] }));
+    expect(slots).not.toContain("10:00");
   });
 });
 

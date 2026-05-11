@@ -10,7 +10,8 @@ import { StepProfessional } from "./StepProfessional";
 import { StepDateTime } from "./StepDateTime";
 import { StepConfirmation } from "./StepConfirmation";
 import { createClient } from "@/lib/supabase";
-import type { Business, Service, ProfessionalWithServices, BookingFormData } from "@/types";
+import { sendBookingEmails } from "@/app/actions";
+import type { Business, Service, ProfessionalWithServices, BookingFormData, AppointmentWithDetails } from "@/types";
 
 const STEPS = ["Serviço", "Profissional", "Data e horário", "Confirmação"];
 
@@ -69,6 +70,24 @@ export function BookingFlow({ business, services, professionals }: Props) {
 
     setSaving(false);
     if (!error && data) {
+      const apptWithDetails: AppointmentWithDetails = {
+        ...data,
+        professional: {
+          id: form.professional.id,
+          name: form.professional.name,
+          photo_url: form.professional.photo_url,
+          specialty: form.professional.specialty,
+        },
+        service: {
+          id: form.service.id,
+          name: form.service.name,
+          price: form.service.price,
+          duration_minutes: form.service.duration_minutes,
+        },
+      };
+      sendBookingEmails(apptWithDetails, business).catch((e) =>
+        console.error("[BookingFlow] sendBookingEmails:", e)
+      );
       router.push(`/${business.slug}/agendar/sucesso?id=${data.id}`);
     }
   }

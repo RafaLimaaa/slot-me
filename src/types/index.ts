@@ -97,7 +97,7 @@ export interface BusinessWithDetails extends Business {
 
 export interface GetAvailableSlotsInput {
   workingHours: WorkingHours | null;
-  appointments: Pick<Appointment, "start_time" | "end_time">[];
+  appointments: (Pick<Appointment, "start_time" | "end_time"> & { status?: AppointmentStatus })[];
   blockedPeriods: Pick<BlockedPeriod, "start_time" | "end_time">[];
   serviceDuration: number;
   currentDateTime: Date;
