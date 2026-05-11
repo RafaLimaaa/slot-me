@@ -69,7 +69,6 @@ export function ImageUploadSection({ business, onRefetch }: Props) {
           </div>
         ))}
       </div>
-      <p className="text-xs text-[#6b7280] mt-3">Requer bucket <code className="text-[#a1a1aa]">business-images</code> público no Supabase Storage.</p>
     </section>
   );
 }
