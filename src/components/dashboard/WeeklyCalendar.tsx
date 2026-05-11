@@ -82,16 +82,24 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
                 <div>{day.getDate()}</div>
               </div>
               <div className="flex flex-col gap-1">
-                {dayAppts.map((a) => (
-                  <button
-                    key={a.id}
-                    onClick={() => setSelected(a)}
-                    className="w-full text-left px-2 py-1 rounded-[6px] bg-[#1e3a5f] text-[#93c5fd] text-xs hover:bg-[#2563EB] hover:text-white transition-colors"
-                  >
-                    <div className="font-medium">{a.start_time.slice(0, 5)}</div>
-                    <div className="truncate">{a.client_name}</div>
-                  </button>
-                ))}
+                {dayAppts.map((a) => {
+                  const cardStyle =
+                    a.status === "completed"
+                      ? "bg-[#14532d] text-[#86efac] hover:bg-[#16a34a] hover:text-white"
+                      : a.status === "cancelled"
+                      ? "bg-[#450a0a] text-[#fca5a5] hover:bg-[#dc2626] hover:text-white"
+                      : "bg-[#1e3a5f] text-[#93c5fd] hover:bg-[#2563EB] hover:text-white";
+                  return (
+                    <button
+                      key={a.id}
+                      onClick={() => setSelected(a)}
+                      className={`w-full text-left px-2 py-1 rounded-[6px] text-xs transition-colors ${cardStyle}`}
+                    >
+                      <div className="font-medium">{a.start_time.slice(0, 5)}</div>
+                      <div className="truncate">{a.client_name}</div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           );
