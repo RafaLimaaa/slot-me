@@ -1,11 +1,14 @@
 "use client";
 
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { Business } from "@/types";
 
 interface Props {
   business: Business;
+  serviceCount: number;
+  professionalCount: number;
 }
 
 const CHECKLIST = [
@@ -15,14 +18,17 @@ const CHECKLIST = [
   { label: "Compartilhar link público", key: "share" },
 ] as const;
 
-export function EmptyState({ business }: Props) {
-  const [copied, setCopied] = useState(false);
-  const publicUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${business.slug}`;
+type ChecklistKey = (typeof CHECKLIST)[number]["key"];
 
-  const completed = {
+export function EmptyState({ business, serviceCount, professionalCount }: Props) {
+  const [copied, setCopied] = useState(false);
+  const router = useRouter();
+  const publicUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://slotme.vercel.app"}/${business.slug}`;
+
+  const completed: Record<ChecklistKey, boolean> = {
     cover: !!business.cover_url,
-    service: false,
-    professional: false,
+    service: serviceCount > 0,
+    professional: professionalCount > 0,
     share: false,
   };
 
@@ -34,12 +40,25 @@ export function EmptyState({ business }: Props) {
     setTimeout(() => setCopied(false), 2000);
   }
 
+  function handleItemClick(key: ChecklistKey) {
+    if (key === "share") {
+      copy();
+    } else {
+      router.push("/dashboard/configuracoes");
+    }
+  }
+
   return (
-    <div className="bg-[#18181b] border border-[#27272a] rounded-[20px] p-6 flex flex-col gap-5">
+    <div className="relative bg-[#18181b] border border-[#27272a] rounded-[20px] p-6 flex flex-col gap-5">
+      {copied && (
+        <div className="absolute top-4 right-4 bg-[#16a34a] text-white text-xs px-3 py-1.5 rounded-[8px] flex items-center gap-1.5">
+          <Check size={12} />
+          Link copiado!
+        </div>
+      )}
+
       <div>
-        <h3 className="text-[#fafafa] font-semibold mb-1">
-          Primeiros passos
-        </h3>
+        <h3 className="text-[#fafafa] font-semibold mb-1">Primeiros passos</h3>
         <div className="w-full h-1.5 bg-[#27272a] rounded-full overflow-hidden">
           <div
             className="h-full bg-[#2563EB] rounded-full transition-all duration-300"
@@ -51,15 +70,23 @@ export function EmptyState({ business }: Props) {
 
       <ul className="flex flex-col gap-2">
         {CHECKLIST.map(({ label, key }) => (
-          <li key={key} className="flex items-center gap-3 text-sm">
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-              completed[key] ? "bg-[#16a34a]" : "border border-[#27272a]"
-            }`}>
-              {completed[key] && <Check size={12} className="text-white" />}
-            </span>
-            <span className={completed[key] ? "text-[#a1a1aa] line-through" : "text-[#fafafa]"}>
-              {label}
-            </span>
+          <li key={key}>
+            <button
+              onClick={() => handleItemClick(key)}
+              className="w-full flex items-center gap-3 text-sm group hover:opacity-80 transition-opacity text-left"
+            >
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                completed[key] ? "bg-[#16a34a]" : "border border-[#27272a]"
+              }`}>
+                {completed[key] && <Check size={12} className="text-white" />}
+              </span>
+              <span className={`flex-1 ${completed[key] ? "text-[#a1a1aa] line-through" : "text-[#fafafa]"}`}>
+                {label}
+              </span>
+              {!completed[key] && (
+                <ChevronRight size={14} className="text-[#a1a1aa] group-hover:text-[#2563EB] transition-colors shrink-0" />
+              )}
+            </button>
           </li>
         ))}
       </ul>

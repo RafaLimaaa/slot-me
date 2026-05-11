@@ -14,7 +14,7 @@ import { useMetrics } from "@/hooks/useMetrics";
 export default function DashboardPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
-  const { business, loading: bizLoading } = useBusiness(user?.id);
+  const { business, services, professionals, loading: bizLoading } = useBusiness(user?.id);
   const today = new Date().toISOString().slice(0, 10);
   const { appointments, loading: apptLoading, updateStatus } = useAppointments(business?.id, today);
   const { metrics, loading: metricsLoading } = useMetrics(business?.id);
@@ -55,7 +55,11 @@ export default function DashboardPage() {
         </div>
         <div>
           {appointments.length === 0 && !apptLoading && (
-            <EmptyState business={business} />
+            <EmptyState
+              business={business}
+              serviceCount={services.length}
+              professionalCount={professionals.length}
+            />
           )}
         </div>
       </div>
