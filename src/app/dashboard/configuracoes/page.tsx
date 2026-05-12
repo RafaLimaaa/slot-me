@@ -10,6 +10,7 @@ import { BusinessSection } from "@/components/dashboard/BusinessSection";
 import { ServicesSection } from "@/components/dashboard/ServicesSection";
 import { ProfessionalsSection } from "@/components/dashboard/ProfessionalsSection";
 import { ImageUploadSection } from "@/components/dashboard/ImageUploadSection";
+import { WorkingHoursSection } from "@/components/dashboard/WorkingHoursSection";
 import { useAuth } from "@/hooks/useAuth";
 import { useBusiness } from "@/hooks/useBusiness";
 import { createClient } from "@/lib/supabase";
@@ -17,7 +18,7 @@ import { createClient } from "@/lib/supabase";
 export default function ConfiguracoesPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
-  const { business, services, professionals, loading, refetch } = useBusiness(user?.id);
+  const { business, services, professionals, workingHours, loading, refetch } = useBusiness(user?.id);
   const [blockForm, setBlockForm] = useState({
     professional_id: "", date: "", start_time: "", end_time: "", reason: "",
   });
@@ -57,6 +58,11 @@ export default function ConfiguracoesPage() {
         businessId={business.id}
         services={services}
         professionals={professionals}
+        onRefetch={refetch}
+      />
+      <WorkingHoursSection
+        professionals={professionals}
+        workingHours={workingHours}
         onRefetch={refetch}
       />
 
