@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, CalendarDays, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { Logo } from "@/components/ui/Logo";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Painel", icon: LayoutDashboard },
@@ -18,7 +19,7 @@ export function DashboardNav() {
   return (
     <aside className="w-56 shrink-0 bg-[#09090b] border-r border-[#27272a] flex flex-col h-screen sticky top-0">
       <div className="px-5 py-5 border-b border-[#27272a]">
-        <span className="text-[#fafafa] font-bold text-lg tracking-tight">SlotMe</span>
+        <Link href="/"><Logo inverted size="sm" /></Link>
       </div>
 
       <nav className="flex-1 p-3 flex flex-col gap-1">
