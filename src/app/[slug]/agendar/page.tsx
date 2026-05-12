@@ -18,12 +18,13 @@ export default async function BookingPage({ params }: Props) {
 
   if (!business) notFound();
 
+  const businessId = business.id;
   const [{ data: services }, { data: professionals }] = await Promise.all([
-    supabase.from("services").select("*").eq("business_id", business.id),
+    supabase.from("services").select("*").eq("business_id", businessId),
     supabase
       .from("professionals")
       .select("*, professional_services(service_id)")
-      .eq("business_id", business.id),
+      .eq("business_id", businessId),
   ]);
 
   const svcMap = new Map((services ?? []).map((s: Service) => [s.id, s]));

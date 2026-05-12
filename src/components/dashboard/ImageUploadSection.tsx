@@ -24,9 +24,9 @@ export function ImageUploadSection({ business, onRefetch }: Props) {
     const { error } = await supabase.storage.from("business-images").upload(path, file, { upsert: true });
     if (!error) {
       const { data } = supabase.storage.from("business-images").getPublicUrl(path);
-      await supabase.from("businesses")
-        .update({ [`${type}_url`]: `${data.publicUrl}?t=${Date.now()}` })
-        .eq("id", business.id);
+      const url = `${data.publicUrl}?t=${Date.now()}`;
+      const updatePayload = type === "cover" ? { cover_url: url } : { logo_url: url };
+      await supabase.from("businesses").update(updatePayload).eq("id", business.id);
       await onRefetch();
     }
     setUploading(null);

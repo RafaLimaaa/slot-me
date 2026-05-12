@@ -28,6 +28,7 @@ export function useAvailability(
     let cancelled = false;
 
     async function load() {
+      if (!professionalId || !date) return;
       setLoading(true);
 
       const dayOfWeek = new Date(date + "T00:00:00").getDay();

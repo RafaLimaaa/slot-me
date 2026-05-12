@@ -16,8 +16,20 @@ export type Database = {
           maps_embed_url: string | null;
           created_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["businesses"]["Row"], "id" | "created_at">;
+        Insert: {
+          owner_id: string;
+          name: string;
+          slug: string;
+          description?: string | null;
+          address?: string | null;
+          city?: string | null;
+          phone?: string | null;
+          cover_url?: string | null;
+          logo_url?: string | null;
+          maps_embed_url?: string | null;
+        };
         Update: Partial<Database["public"]["Tables"]["businesses"]["Insert"]>;
+        Relationships: [];
       };
       professionals: {
         Row: {
@@ -28,8 +40,22 @@ export type Database = {
           specialty: string | null;
           created_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["professionals"]["Row"], "id" | "created_at">;
+        Insert: {
+          business_id: string;
+          name: string;
+          photo_url?: string | null;
+          specialty?: string | null;
+        };
         Update: Partial<Database["public"]["Tables"]["professionals"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "professionals_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       services: {
         Row: {
@@ -42,6 +68,15 @@ export type Database = {
         };
         Insert: Omit<Database["public"]["Tables"]["services"]["Row"], "id" | "created_at">;
         Update: Partial<Database["public"]["Tables"]["services"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "services_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       professional_services: {
         Row: {
@@ -50,6 +85,22 @@ export type Database = {
         };
         Insert: Database["public"]["Tables"]["professional_services"]["Row"];
         Update: Partial<Database["public"]["Tables"]["professional_services"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "professional_services_professional_id_fkey";
+            columns: ["professional_id"];
+            isOneToOne: false;
+            referencedRelation: "professionals";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "professional_services_service_id_fkey";
+            columns: ["service_id"];
+            isOneToOne: false;
+            referencedRelation: "services";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       working_hours: {
         Row: {
@@ -63,6 +114,15 @@ export type Database = {
         };
         Insert: Omit<Database["public"]["Tables"]["working_hours"]["Row"], "id">;
         Update: Partial<Database["public"]["Tables"]["working_hours"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "working_hours_professional_id_fkey";
+            columns: ["professional_id"];
+            isOneToOne: false;
+            referencedRelation: "professionals";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       blocked_periods: {
         Row: {
@@ -76,6 +136,15 @@ export type Database = {
         };
         Insert: Omit<Database["public"]["Tables"]["blocked_periods"]["Row"], "id" | "created_at">;
         Update: Partial<Database["public"]["Tables"]["blocked_periods"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "blocked_periods_professional_id_fkey";
+            columns: ["professional_id"];
+            isOneToOne: false;
+            referencedRelation: "professionals";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       appointments: {
         Row: {
@@ -99,7 +168,34 @@ export type Database = {
           "id" | "cancel_token" | "reschedule_token" | "created_at"
         > & { status?: "scheduled" | "completed" | "cancelled" };
         Update: Partial<Database["public"]["Tables"]["appointments"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "appointments_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "appointments_professional_id_fkey";
+            columns: ["professional_id"];
+            isOneToOne: false;
+            referencedRelation: "professionals";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "appointments_service_id_fkey";
+            columns: ["service_id"];
+            isOneToOne: false;
+            referencedRelation: "services";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 };

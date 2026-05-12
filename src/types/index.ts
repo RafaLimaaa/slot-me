@@ -107,7 +107,7 @@ export interface GetAvailableSlotsInput {
 
 export interface BookingFormData {
   service: Service | null;
-  professional: Professional | null;
+  professional: ProfessionalWithServices | null;
   date: string | null; // YYYY-MM-DD
   time: string | null; // HH:MM
   clientName: string;

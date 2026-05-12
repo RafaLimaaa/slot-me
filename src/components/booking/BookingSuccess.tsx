@@ -49,7 +49,7 @@ export function BookingSuccess({ appointment: a, business, slug }: Props) {
             ["Data", date],
             ["Horário", a.start_time.slice(0, 5)],
             business.address ? ["Endereço", `${business.address}${business.city ? `, ${business.city}` : ""}`] : null,
-          ].filter(Boolean).map(([k, v]) => (
+          ].filter((row): row is [string, string] => row !== null).map(([k, v]) => (
             <div key={k} className="flex justify-between text-sm py-1.5 border-b border-[#f1f5f9] last:border-0">
               <span className="text-[#6b7280]">{k}</span>
               <span className="text-[#09090b] font-medium text-right">{v}</span>
