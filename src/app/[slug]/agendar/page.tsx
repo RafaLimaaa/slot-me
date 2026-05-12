@@ -5,9 +5,10 @@ import type { Professional, ProfessionalWithServices, Service } from "@/types";
 
 interface Props {
   params: { slug: string };
+  searchParams: { service_id?: string; professional_id?: string };
 }
 
-export default async function BookingPage({ params }: Props) {
+export default async function BookingPage({ params, searchParams }: Props) {
   const supabase = createServerSupabaseClient();
 
   const { data: business } = await supabase
@@ -43,6 +44,8 @@ export default async function BookingPage({ params }: Props) {
       business={business}
       services={services ?? []}
       professionals={enriched}
+      initialServiceId={searchParams.service_id}
+      initialProfessionalId={searchParams.professional_id}
     />
   );
 }

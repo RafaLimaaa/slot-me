@@ -72,11 +72,22 @@ export default async function BusinessPage({ params }: Props) {
         <BusinessHeader business={business} />
 
         <div className="flex flex-col gap-10 mt-8">
-          {(services?.length ?? 0) > 0 && (
-            <ServiceList services={services ?? []} />
-          )}
-          {(professionals?.length ?? 0) > 0 && (
-            <ProfessionalList professionals={professionals ?? []} />
+          {(services?.length ?? 0) === 0 && (professionals?.length ?? 0) === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-[#374151] font-medium">Em breve</p>
+              <p className="text-[#6b7280] text-sm mt-1">
+                Este negócio ainda está configurando seus serviços. Volte em breve.
+              </p>
+            </div>
+          ) : (
+            <>
+              {(services?.length ?? 0) > 0 && (
+                <ServiceList services={services ?? []} />
+              )}
+              {(professionals?.length ?? 0) > 0 && (
+                <ProfessionalList professionals={professionals ?? []} />
+              )}
+            </>
           )}
           {business.maps_embed_url && (
             <MapEmbed embedUrl={business.maps_embed_url} />

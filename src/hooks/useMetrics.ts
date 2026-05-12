@@ -27,7 +27,7 @@ export function useMetrics(businessId: string | undefined) {
         )
         .eq("business_id", businessId)
         .eq("date", today)
-        .eq("status", "scheduled")
+        .in("status", ["scheduled", "completed"])
         .order("start_time", { ascending: true }),
       supabase
         .from("appointments")
@@ -38,7 +38,10 @@ export function useMetrics(businessId: string | undefined) {
     ]);
 
     const appts = (todayAppts as AppointmentWithDetails[]) ?? [];
-    const revenueToday = appts.reduce((sum, a) => sum + a.service.price, 0);
+    const scheduledToday = appts.filter((a) => a.status === "scheduled");
+    const revenueToday = appts
+      .filter((a) => a.status === "completed")
+      .reduce((sum, a) => sum + a.service.price, 0);
 
     const totalWeek = (weekAppts ?? []).length;
     const completedOrScheduled = (weekAppts ?? []).filter(
@@ -49,13 +52,13 @@ export function useMetrics(businessId: string | undefined) {
 
     const now = new Date();
     const nextAppointment =
-      appts.find((a) => {
+      scheduledToday.find((a) => {
         const [h, m] = a.start_time.split(":").map(Number);
         return h * 60 + m > now.getHours() * 60 + now.getMinutes();
       }) ?? null;
 
     setMetrics({
-      appointmentsToday: appts.length,
+      appointmentsToday: scheduledToday.length,
       revenueToday,
       weeklyOccupancyRate,
       nextAppointment,

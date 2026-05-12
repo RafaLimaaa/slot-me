@@ -11,7 +11,7 @@ export default async function RescheduleRedirectPage({ params }: Props) {
 
   const { data } = await supabase
     .from("appointments")
-    .select("id, status, business_id, businesses(slug)")
+    .select("id, status, business_id, service_id, professional_id, businesses(slug)")
     .eq("reschedule_token", params.token)
     .single();
 
@@ -32,5 +32,9 @@ export default async function RescheduleRedirectPage({ params }: Props) {
       .eq("id", data.id);
   }
 
-  redirect(`/${biz.slug}/agendar`);
+  const qs = new URLSearchParams();
+  if (data.service_id) qs.set("service_id", data.service_id);
+  if (data.professional_id) qs.set("professional_id", data.professional_id);
+  const qsStr = qs.toString();
+  redirect(`/${biz.slug}/agendar${qsStr ? `?${qsStr}` : ""}`);
 }

@@ -9,9 +9,10 @@ interface Props {
   appointment: AppointmentWithDetails;
   business: Business;
   slug: string;
+  emailError?: boolean;
 }
 
-export function BookingSuccess({ appointment: a, business, slug }: Props) {
+export function BookingSuccess({ appointment: a, business, slug, emailError }: Props) {
   const date = new Date(a.date + "T00:00:00").toLocaleDateString("pt-BR", {
     weekday: "long",
     day: "2-digit",
@@ -38,9 +39,15 @@ export function BookingSuccess({ appointment: a, business, slug }: Props) {
         </div>
 
         <h1 className="text-xl font-bold text-[#09090b] mb-1">Agendamento confirmado</h1>
-        <p className="text-[#6b7280] text-sm mb-6">
-          Um email de confirmação foi enviado para {a.client_email}.
-        </p>
+        {emailError ? (
+          <p className="text-[#b45309] text-sm mb-6 bg-[#fef3c7] rounded-[8px] px-3 py-2">
+            Agendamento criado, mas não foi possível enviar o email de confirmação. Guarde as informações abaixo.
+          </p>
+        ) : (
+          <p className="text-[#6b7280] text-sm mb-6">
+            Um email de confirmação foi enviado para {a.client_email}.
+          </p>
+        )}
 
         <div className="bg-[#f8fafc] rounded-[12px] p-4 text-left mb-6">
           {[

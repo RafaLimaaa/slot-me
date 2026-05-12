@@ -19,14 +19,18 @@ interface Props {
   business: Business;
   services: Service[];
   professionals: ProfessionalWithServices[];
+  initialServiceId?: string;
+  initialProfessionalId?: string;
 }
 
-export function BookingFlow({ business, services, professionals }: Props) {
-  const [step, setStep] = useState(0);
+export function BookingFlow({ business, services, professionals, initialServiceId, initialProfessionalId }: Props) {
+  const preService = initialServiceId ? (services.find((s) => s.id === initialServiceId) ?? null) : null;
+  const preProf = initialProfessionalId ? (professionals.find((p) => p.id === initialProfessionalId) ?? null) : null;
+  const [step, setStep] = useState(preService && preProf ? 2 : preService ? 1 : 0);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<BookingFormData>({
-    service: null,
-    professional: null,
+    service: preService,
+    professional: preProf,
     date: null,
     time: null,
     clientName: "",
@@ -68,28 +72,32 @@ export function BookingFlow({ business, services, professionals }: Props) {
       .select()
       .single();
 
-    setSaving(false);
-    if (!error && data) {
-      const apptWithDetails: AppointmentWithDetails = {
-        ...data,
-        professional: {
-          id: form.professional.id,
-          name: form.professional.name,
-          photo_url: form.professional.photo_url,
-          specialty: form.professional.specialty,
-        },
-        service: {
-          id: form.service.id,
-          name: form.service.name,
-          price: form.service.price,
-          duration_minutes: form.service.duration_minutes,
-        },
-      };
-      sendBookingEmails(apptWithDetails, business).catch((e) =>
-        console.error("[BookingFlow] sendBookingEmails:", e)
-      );
-      router.push(`/${business.slug}/agendar/sucesso?id=${data.id}`);
+    if (error || !data) {
+      setSaving(false);
+      return;
     }
+
+    const apptWithDetails: AppointmentWithDetails = {
+      ...data,
+      professional: {
+        id: form.professional.id,
+        name: form.professional.name,
+        photo_url: form.professional.photo_url,
+        specialty: form.professional.specialty,
+      },
+      service: {
+        id: form.service.id,
+        name: form.service.name,
+        price: form.service.price,
+        duration_minutes: form.service.duration_minutes,
+      },
+    };
+
+    const { error: emailErr } = await sendBookingEmails(apptWithDetails, business);
+    setSaving(false);
+    router.push(
+      `/${business.slug}/agendar/sucesso?id=${data.id}${emailErr ? "&email=erro" : ""}`
+    );
   }
 
   return (

@@ -5,7 +5,7 @@ import type { AppointmentWithDetails } from "@/types";
 
 interface Props {
   params: { slug: string };
-  searchParams: { id?: string };
+  searchParams: { id?: string; email?: string };
 }
 
 export default async function SuccessPage({ params, searchParams }: Props) {
@@ -36,6 +36,7 @@ export default async function SuccessPage({ params, searchParams }: Props) {
       appointment={appointment as AppointmentWithDetails}
       business={business}
       slug={params.slug}
+      emailError={searchParams.email === "erro"}
     />
   );
 }
