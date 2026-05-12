@@ -2,7 +2,9 @@ import { Resend } from "resend";
 import type { AppointmentWithDetails, Business } from "@/types";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM = "SlotMe <noreply@slotme.com.br>";
+const FROM = "SlotMe <onboarding@resend.dev>";
+
+console.log("[Resend] API key present:", !!process.env.RESEND_API_KEY);
 
 // ─── Template base ────────────────────────────────────────────────────────────
 
@@ -94,19 +96,17 @@ export async function sendConfirmationToClient(
     </div>`;
 
   try {
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: FROM,
       to: appt.client_email,
       subject: `Agendamento confirmado — ${business.name}`,
       html: baseTemplate(content),
     });
-    if (error) {
-      console.error("[Resend] sendConfirmationToClient:", error);
-      return { error: "Falha ao enviar email de confirmação." };
-    }
+    console.log("[Resend] sendConfirmationToClient →", { data, error, to: appt.client_email });
+    if (error) return { error: "Falha ao enviar email de confirmação." };
     return {};
   } catch (e) {
-    console.error("[Resend] sendConfirmationToClient:", e);
+    console.error("[Resend] sendConfirmationToClient exception:", e);
     return { error: "Falha ao enviar email de confirmação." };
   }
 }
@@ -131,19 +131,17 @@ export async function sendReminderToClient(
     </div>`;
 
   try {
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: FROM,
       to: appt.client_email,
       subject: `Lembrete — seu agendamento é amanhã`,
       html: baseTemplate(content),
     });
-    if (error) {
-      console.error("[Resend] sendReminderToClient:", error);
-      return { error: "Falha ao enviar email de lembrete." };
-    }
+    console.log("[Resend] sendReminderToClient →", { data, error, to: appt.client_email });
+    if (error) return { error: "Falha ao enviar email de lembrete." };
     return {};
   } catch (e) {
-    console.error("[Resend] sendReminderToClient:", e);
+    console.error("[Resend] sendReminderToClient exception:", e);
     return { error: "Falha ao enviar email de lembrete." };
   }
 }
@@ -166,19 +164,17 @@ export async function sendNewAppointmentToOwner(
     </table>`;
 
   try {
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: FROM,
       to: ownerEmail,
       subject: `Novo agendamento — ${appt.client_name}`,
       html: baseTemplate(content),
     });
-    if (error) {
-      console.error("[Resend] sendNewAppointmentToOwner:", error);
-      return { error: "Falha ao notificar o dono do negócio." };
-    }
+    console.log("[Resend] sendNewAppointmentToOwner →", { data, error, to: ownerEmail });
+    if (error) return { error: "Falha ao notificar o dono do negócio." };
     return {};
   } catch (e) {
-    console.error("[Resend] sendNewAppointmentToOwner:", e);
+    console.error("[Resend] sendNewAppointmentToOwner exception:", e);
     return { error: "Falha ao notificar o dono do negócio." };
   }
 }
@@ -200,19 +196,17 @@ export async function sendCancellationToOwner(
     </table>`;
 
   try {
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: FROM,
       to: ownerEmail,
       subject: `Agendamento cancelado — ${appt.client_name}`,
       html: baseTemplate(content),
     });
-    if (error) {
-      console.error("[Resend] sendCancellationToOwner:", error);
-      return { error: "Falha ao enviar notificação de cancelamento." };
-    }
+    console.log("[Resend] sendCancellationToOwner →", { data, error, to: ownerEmail });
+    if (error) return { error: "Falha ao enviar notificação de cancelamento." };
     return {};
   } catch (e) {
-    console.error("[Resend] sendCancellationToOwner:", e);
+    console.error("[Resend] sendCancellationToOwner exception:", e);
     return { error: "Falha ao enviar notificação de cancelamento." };
   }
 }
