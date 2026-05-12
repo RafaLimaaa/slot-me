@@ -47,7 +47,7 @@ export function BusinessSection({ business, onRefetch }: Props) {
   function startEdit() {
     setForm({
       name: business.name, slug: business.slug, description: business.description ?? "",
-      street: business.street ?? "", street_number: business.street_number ?? "",
+      street: business.address ?? "", street_number: business.street_number ?? "",
       neighborhood: business.neighborhood ?? "", city: business.city ?? "",
       zip_code: formatZipCode(business.zip_code ?? ""),
       phone: formatPhone(business.phone ?? ""), maps_embed_url: business.maps_embed_url ?? "",
@@ -75,7 +75,7 @@ export function BusinessSection({ business, onRefetch }: Props) {
       name: form.name,
       slug: form.slug.toLowerCase().replace(/\s+/g, "-"),
       description: form.description || null,
-      street: form.street || null,
+      address: form.street || null,
       street_number: form.street_number || null,
       neighborhood: form.neighborhood || null,
       city: form.city || null,
@@ -100,7 +100,7 @@ export function BusinessSection({ business, onRefetch }: Props) {
   };
 
   const fullAddress = [
-    business.street && `${business.street}${business.street_number ? `, ${business.street_number}` : ""}`,
+    business.address && `${business.address}${business.street_number ? `, ${business.street_number}` : ""}`,
     business.neighborhood,
     business.city,
     business.zip_code && `CEP ${business.zip_code}`,

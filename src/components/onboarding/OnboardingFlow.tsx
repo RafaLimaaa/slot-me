@@ -44,7 +44,7 @@ export function OnboardingFlow({ userId }: { userId: string }) {
         name: businessData.name,
         slug: businessData.slug,
         description: businessData.description || null,
-        street: businessData.street || null,
+        address: businessData.street || null,
         street_number: businessData.street_number || null,
         neighborhood: businessData.neighborhood || null,
         city: businessData.city || null,

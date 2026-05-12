@@ -9,7 +9,6 @@ export type Database = {
           slug: string;
           description: string | null;
           address: string | null;
-          street: string | null;
           street_number: string | null;
           neighborhood: string | null;
           city: string | null;
@@ -26,7 +25,6 @@ export type Database = {
           slug: string;
           description?: string | null;
           address?: string | null;
-          street?: string | null;
           street_number?: string | null;
           neighborhood?: string | null;
           city?: string | null;
