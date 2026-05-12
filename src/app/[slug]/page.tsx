@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { BusinessHeader } from "@/components/public/BusinessHeader";
 import { ServiceList } from "@/components/public/ServiceList";
@@ -47,9 +46,7 @@ export default async function BusinessPage({ params }: Props) {
 
         {/* CTA desktop */}
         <div className="hidden md:flex justify-center mt-10">
-          <Link href={`/${params.slug}/agendar`}>
-            <Button size="lg">Agendar agora</Button>
-          </Link>
+          <Button href={`/${params.slug}/agendar`} size="lg">Agendar agora</Button>
         </div>
       </div>
 
@@ -57,9 +54,7 @@ export default async function BusinessPage({ params }: Props) {
 
       {/* CTA mobile fixo */}
       <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t border-[#f1f5f9] p-4 safe-bottom">
-        <Link href={`/${params.slug}/agendar`}>
-          <Button size="lg" className="w-full">Agendar agora</Button>
-        </Link>
+        <Button href={`/${params.slug}/agendar`} size="lg" className="w-full">Agendar agora</Button>
       </div>
     </div>
   );

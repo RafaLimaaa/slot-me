@@ -2,6 +2,12 @@ import Image from "next/image";
 import { MapPin, Phone } from "lucide-react";
 import type { Business } from "@/types";
 
+function formatPhone(phone: string): string {
+  const d = phone.replace(/\D/g, "");
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
 export function BusinessHeader({ business }: { business: Business }) {
   return (
     <div>
@@ -39,7 +45,7 @@ export function BusinessHeader({ business }: { business: Business }) {
                 href={`tel:${business.phone}`}
                 className="flex items-center gap-1 text-xs text-[#6b7280] hover:text-[#2563EB] transition-colors"
               >
-                <Phone size={12} /> {business.phone}
+                <Phone size={12} /> {formatPhone(business.phone)}
               </a>
             )}
           </div>

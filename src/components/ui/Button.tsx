@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { type ButtonHTMLAttributes, forwardRef } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -7,10 +8,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "danger" | "ghost";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
+  href?: string;
+  target?: string;
+  rel?: string;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = "primary", size = "md", loading, disabled, children, className = "", ...props }, ref) => {
+  ({ variant = "primary", size = "md", loading, disabled, children, className = "", href, target, rel, ...props }, ref) => {
     const base =
       "inline-flex items-center justify-center gap-2 font-medium rounded-[12px] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
@@ -31,15 +35,19 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       lg: "text-base px-6 py-3",
     };
 
+    const cls = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+    const inner = <>{loading && <Loader2 size={16} className="animate-spin" />}{children}</>;
+
+    if (href) {
+      if (/^https?:\/\//.test(href)) {
+        return <a href={href} target={target} rel={rel} className={cls}>{inner}</a>;
+      }
+      return <Link href={href} target={target} rel={rel} className={cls}>{inner}</Link>;
+    }
+
     return (
-      <button
-        ref={ref}
-        disabled={disabled ?? loading}
-        className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
-        {...props}
-      >
-        {loading && <Loader2 size={16} className="animate-spin" />}
-        {children}
+      <button ref={ref} disabled={disabled ?? loading} className={cls} {...props}>
+        {inner}
       </button>
     );
   }

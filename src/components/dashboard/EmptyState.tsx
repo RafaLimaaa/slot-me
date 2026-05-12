@@ -22,6 +22,10 @@ type ChecklistKey = (typeof CHECKLIST)[number]["key"];
 
 export function EmptyState({ business, serviceCount, professionalCount }: Props) {
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(`slotme_shared_${business.id}`) === "1";
+  });
   const router = useRouter();
   const publicUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://slotme.vercel.app"}/${business.slug}`;
 
@@ -29,14 +33,20 @@ export function EmptyState({ business, serviceCount, professionalCount }: Props)
     cover: !!business.cover_url,
     service: serviceCount > 0,
     professional: professionalCount > 0,
-    share: false,
+    share: shared,
   };
 
   const doneCount = Object.values(completed).filter(Boolean).length;
 
+  if (doneCount === CHECKLIST.length) return null;
+
   async function copy() {
     await navigator.clipboard.writeText(publicUrl);
     setCopied(true);
+    if (!shared) {
+      setShared(true);
+      localStorage.setItem(`slotme_shared_${business.id}`, "1");
+    }
     setTimeout(() => setCopied(false), 2000);
   }
 

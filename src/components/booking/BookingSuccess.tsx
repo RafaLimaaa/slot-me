@@ -58,11 +58,9 @@ export function BookingSuccess({ appointment: a, business, slug }: Props) {
         </div>
 
         <div className="flex flex-col gap-2">
-          <a href={gcalUrl} target="_blank" rel="noopener noreferrer">
-            <Button variant="secondary" className="w-full" size="sm">
-              <CalendarPlus size={15} /> Adicionar ao Google Calendar
-            </Button>
-          </a>
+          <Button href={gcalUrl} target="_blank" rel="noopener noreferrer" variant="secondary" className="w-full" size="sm">
+            <CalendarPlus size={15} /> Adicionar ao Google Calendar
+          </Button>
           <Link href={`/cancelar/${a.cancel_token}`}>
             <Button variant="ghost" className="w-full" size="sm">
               <X size={15} /> Cancelar agendamento

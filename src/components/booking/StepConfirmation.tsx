@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import type { BookingFormData } from "@/types";
@@ -19,6 +20,8 @@ interface Props {
 }
 
 export function StepConfirmation({ form, onChangeClient, onConfirm, loading }: Props) {
+  const [attempted, setAttempted] = useState(false);
+
   const brl = (v: number) =>
     v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -33,11 +36,20 @@ export function StepConfirmation({ form, onChangeClient, onConfirm, loading }: P
   const phoneDigits = form.clientPhone.replace(/\D/g, "");
   const isPhoneValid = phoneDigits.length >= 10 && phoneDigits.length <= 11;
   const isEmailValid = EMAIL_REGEX.test(form.clientEmail);
-
-  const showPhoneError = form.clientPhone.length > 0 && !isPhoneValid;
-  const showEmailError = form.clientEmail.length > 0 && !isEmailValid;
-
   const canConfirm = !!form.clientName && isPhoneValid && isEmailValid;
+
+  const nameError = attempted && !form.clientName ? "Informe seu nome." : undefined;
+  const phoneError = (attempted || form.clientPhone.length > 0) && !isPhoneValid
+    ? "Informe um telefone válido com 10 ou 11 dígitos."
+    : undefined;
+  const emailError = (attempted || form.clientEmail.length > 0) && !isEmailValid
+    ? "Informe um email válido."
+    : undefined;
+
+  function handleConfirm() {
+    setAttempted(true);
+    if (canConfirm) onConfirm();
+  }
 
   return (
     <div className="flex flex-col md:flex-row gap-6">
@@ -65,38 +77,26 @@ export function StepConfirmation({ form, onChangeClient, onConfirm, loading }: P
           required
           value={form.clientName}
           onChange={(e) => onChangeClient("clientName", e.target.value)}
+          error={nameError}
         />
-        <div className="flex flex-col gap-1">
-          <Input
-            label="Telefone"
-            inputMode="numeric"
-            required
-            placeholder="(00) 00000-0000"
-            value={form.clientPhone}
-            onChange={(e) => onChangeClient("clientPhone", formatPhone(e.target.value))}
-          />
-          {showPhoneError && (
-            <p className="text-xs text-[#DC2626]">Informe um telefone válido com 10 ou 11 dígitos.</p>
-          )}
-        </div>
-        <div className="flex flex-col gap-1">
-          <Input
-            label="Email"
-            type="email"
-            required
-            value={form.clientEmail}
-            onChange={(e) => onChangeClient("clientEmail", e.target.value)}
-          />
-          {showEmailError && (
-            <p className="text-xs text-[#DC2626]">Informe um email válido.</p>
-          )}
-        </div>
-        <Button
-          className="w-full mt-2"
-          loading={loading}
-          disabled={!canConfirm}
-          onClick={onConfirm}
-        >
+        <Input
+          label="Telefone"
+          inputMode="numeric"
+          required
+          placeholder="(00) 00000-0000"
+          value={form.clientPhone}
+          onChange={(e) => onChangeClient("clientPhone", formatPhone(e.target.value))}
+          error={phoneError}
+        />
+        <Input
+          label="Email"
+          type="email"
+          required
+          value={form.clientEmail}
+          onChange={(e) => onChangeClient("clientEmail", e.target.value)}
+          error={emailError}
+        />
+        <Button className="w-full mt-2" loading={loading} onClick={handleConfirm}>
           Confirmar agendamento
         </Button>
       </div>
