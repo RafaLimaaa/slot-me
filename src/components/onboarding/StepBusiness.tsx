@@ -11,6 +11,12 @@ interface Props {
   onNext: (data: BusinessFormData) => void;
 }
 
+function formatZipCode(value: string): string {
+  const d = value.replace(/\D/g, "").slice(0, 8);
+  if (d.length <= 5) return d;
+  return `${d.slice(0, 5)}-${d.slice(5)}`;
+}
+
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -35,6 +41,7 @@ export function StepBusiness({ initial, onNext }: Props) {
   });
   const [slugManual, setSlugManual] = useState(!!initial.slug);
   const [slugError, setSlugError] = useState("");
+  const [zipError, setZipError] = useState("");
   const [loading, setLoading] = useState(false);
   const supabase = createClient();
 
@@ -56,6 +63,11 @@ export function StepBusiness({ initial, onNext }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.name || !form.slug) return;
+    const zipDigits = form.zip_code.replace(/\D/g, "");
+    if (form.zip_code && zipDigits.length !== 8) {
+      setZipError("CEP deve ter 8 dígitos.");
+      return;
+    }
     setLoading(true);
 
     const taken = await checkSlug(form.slug);
@@ -67,12 +79,14 @@ export function StepBusiness({ initial, onNext }: Props) {
 
     setSlugError("");
     setLoading(false);
-    onNext(form);
+    onNext({ ...form, zip_code: zipDigits || "" });
   }
 
   const set = (key: keyof BusinessFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((f) => ({ ...f, [key]: e.target.value }));
+    let value = e.target.value;
+    if (key === "zip_code") { value = formatZipCode(value); setZipError(""); }
     if (key === "slug") setSlugManual(true);
+    setForm((f) => ({ ...f, [key]: value }));
   };
 
   return (
@@ -101,7 +115,8 @@ export function StepBusiness({ initial, onNext }: Props) {
       </div>
       <div className="grid grid-cols-2 gap-3">
         <Input label="Cidade" value={form.city} onChange={set("city")} />
-        <Input label="CEP" value={form.zip_code} onChange={set("zip_code")} />
+        <Input label="CEP" value={form.zip_code} onChange={set("zip_code")}
+          inputMode="numeric" placeholder="00000-000" error={zipError} />
       </div>
       <Input label="Link embed Google Maps (opcional)" value={form.maps_embed_url} onChange={set("maps_embed_url")} />
       <Button type="submit" loading={loading} className="w-full mt-2">

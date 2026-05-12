@@ -25,10 +25,18 @@ function formatPhone(value: string): string {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
+function formatZipCode(value: string): string {
+  const d = value.replace(/\D/g, "").slice(0, 8);
+  if (d.length <= 5) return d;
+  return `${d.slice(0, 5)}-${d.slice(5)}`;
+}
+
 export function BusinessSection({ business, onRefetch }: Props) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [phoneError, setPhoneError] = useState<string | undefined>();
+  const [zipError, setZipError] = useState<string | undefined>();
   const [form, setForm] = useState<Form>({
     name: "", slug: "", description: "",
     street: "", street_number: "", neighborhood: "", city: "", zip_code: "",
@@ -41,10 +49,12 @@ export function BusinessSection({ business, onRefetch }: Props) {
       name: business.name, slug: business.slug, description: business.description ?? "",
       street: business.street ?? "", street_number: business.street_number ?? "",
       neighborhood: business.neighborhood ?? "", city: business.city ?? "",
-      zip_code: business.zip_code ?? "",
+      zip_code: formatZipCode(business.zip_code ?? ""),
       phone: formatPhone(business.phone ?? ""), maps_embed_url: business.maps_embed_url ?? "",
     });
     setPhoneError(undefined);
+    setZipError(undefined);
+    setSaveError(null);
     setEditing(true);
   }
 
@@ -54,8 +64,14 @@ export function BusinessSection({ business, onRefetch }: Props) {
       setPhoneError("Informe um telefone válido com 10 ou 11 dígitos.");
       return;
     }
+    const zipDigits = form.zip_code.replace(/\D/g, "");
+    if (form.zip_code && zipDigits.length !== 8) {
+      setZipError("CEP deve ter 8 dígitos.");
+      return;
+    }
     setSaving(true);
-    await supabase.from("businesses").update({
+    setSaveError(null);
+    const { error } = await supabase.from("businesses").update({
       name: form.name,
       slug: form.slug.toLowerCase().replace(/\s+/g, "-"),
       description: form.description || null,
@@ -63,19 +79,24 @@ export function BusinessSection({ business, onRefetch }: Props) {
       street_number: form.street_number || null,
       neighborhood: form.neighborhood || null,
       city: form.city || null,
-      zip_code: form.zip_code || null,
+      zip_code: zipDigits || null,
       phone: form.phone || null,
       maps_embed_url: form.maps_embed_url || null,
     }).eq("id", business.id);
-    await onRefetch();
     setSaving(false);
+    if (error) {
+      setSaveError(`Erro ao salvar: ${error.message}`);
+      return;
+    }
+    await onRefetch();
     setEditing(false);
   }
 
   const upd = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = k === "phone" ? formatPhone(e.target.value) : e.target.value;
+    let value = e.target.value;
+    if (k === "phone") { value = formatPhone(value); setPhoneError(undefined); }
+    if (k === "zip_code") { value = formatZipCode(value); setZipError(undefined); }
     setForm((f) => ({ ...f, [k]: value }));
-    if (k === "phone") setPhoneError(undefined);
   };
 
   const fullAddress = [
@@ -110,9 +131,13 @@ export function BusinessSection({ business, onRefetch }: Props) {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Input label="Cidade" value={form.city} onChange={upd("city")} />
-            <Input label="CEP" value={form.zip_code} onChange={upd("zip_code")} />
+            <Input label="CEP" value={form.zip_code} onChange={upd("zip_code")}
+              inputMode="numeric" placeholder="00000-000" error={zipError} />
           </div>
           <Input label="Link Google Maps" value={form.maps_embed_url} onChange={upd("maps_embed_url")} />
+          {saveError && (
+            <p className="text-xs text-[#fca5a5] bg-[#450a0a] rounded-[8px] px-3 py-2">{saveError}</p>
+          )}
           <div className="flex gap-2 mt-1">
             <Button type="button" variant="secondary" className="flex-1" onClick={() => setEditing(false)}>Cancelar</Button>
             <Button type="button" loading={saving} className="flex-1" onClick={save}>Salvar</Button>
