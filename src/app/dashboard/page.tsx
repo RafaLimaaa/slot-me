@@ -6,6 +6,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { MetricsBar } from "@/components/dashboard/MetricsBar";
 import { AppointmentList } from "@/components/dashboard/AppointmentList";
 import { EmptyState } from "@/components/dashboard/EmptyState";
+import { ExternalLink } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useAppointments } from "@/hooks/useAppointments";
@@ -40,6 +41,15 @@ export default function DashboardPage() {
         <p className="text-[#a1a1aa] text-sm mt-1">
           {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}
         </p>
+        <a
+          href={`${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/${business.slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-xs text-[#52525b] hover:text-[#a1a1aa] mt-1 transition-colors"
+        >
+          <ExternalLink size={11} />
+          {`${(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000").replace(/^https?:\/\//, "")}/${business.slug}`}
+        </a>
       </div>
 
       {!metricsLoading && metrics && <MetricsBar metrics={metrics} />}
