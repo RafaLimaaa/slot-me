@@ -88,6 +88,8 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
                       ? "bg-[#14532d] text-[#86efac] hover:bg-[#16a34a] hover:text-white"
                       : a.status === "cancelled"
                       ? "bg-[#450a0a] text-[#fca5a5] hover:bg-[#dc2626] hover:text-white"
+                      : a.status === "no_show"
+                      ? "bg-[#431407] text-[#fb923c] hover:bg-[#ea580c] hover:text-white"
                       : "bg-[#1e3a5f] text-[#93c5fd] hover:bg-[#2563EB] hover:text-white";
                   return (
                     <button
@@ -158,8 +160,12 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
           )}
           {selected.status !== "scheduled" && (
             <div className="mt-4">
-              <Badge variant={selected.status === "completed" ? "success" : "danger"}>
-                {selected.status === "completed" ? "Concluído" : "Cancelado"}
+              <Badge variant={
+                selected.status === "completed" ? "success" :
+                selected.status === "no_show" ? "orange" : "danger"
+              }>
+                {selected.status === "completed" ? "Concluído" :
+                 selected.status === "no_show" ? "Não compareceu" : "Cancelado"}
               </Badge>
             </div>
           )}

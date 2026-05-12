@@ -9,7 +9,11 @@ export type Database = {
           slug: string;
           description: string | null;
           address: string | null;
+          street: string | null;
+          street_number: string | null;
+          neighborhood: string | null;
           city: string | null;
+          zip_code: string | null;
           phone: string | null;
           cover_url: string | null;
           logo_url: string | null;
@@ -22,7 +26,11 @@ export type Database = {
           slug: string;
           description?: string | null;
           address?: string | null;
+          street?: string | null;
+          street_number?: string | null;
+          neighborhood?: string | null;
           city?: string | null;
+          zip_code?: string | null;
           phone?: string | null;
           cover_url?: string | null;
           logo_url?: string | null;
@@ -160,7 +168,7 @@ export type Database = {
           date: string;
           start_time: string;
           end_time: string;
-          status: "scheduled" | "completed" | "cancelled";
+          status: "scheduled" | "completed" | "cancelled" | "no_show";
           cancel_token: string;
           reschedule_token: string;
           created_at: string;
@@ -168,7 +176,7 @@ export type Database = {
         Insert: Omit<
           Database["public"]["Tables"]["appointments"]["Row"],
           "id" | "cancel_token" | "reschedule_token" | "created_at"
-        > & { status?: "scheduled" | "completed" | "cancelled" };
+        > & { status?: "scheduled" | "completed" | "cancelled" | "no_show" };
         Update: Partial<Database["public"]["Tables"]["appointments"]["Insert"]>;
         Relationships: [
           {

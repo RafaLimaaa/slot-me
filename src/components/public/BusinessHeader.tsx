@@ -35,9 +35,14 @@ export function BusinessHeader({ business }: { business: Business }) {
             <p className="text-[#6b7280] text-sm mt-1">{business.description}</p>
           )}
           <div className="flex items-center gap-4 mt-2">
-            {business.city && (
+            {(business.street || business.city) && (
               <span className="flex items-center gap-1 text-xs text-[#6b7280]">
-                <MapPin size={12} /> {business.city}
+                <MapPin size={12} />
+                {[
+                  business.street && `${business.street}${business.street_number ? `, ${business.street_number}` : ""}`,
+                  business.neighborhood,
+                  business.city,
+                ].filter(Boolean).join(" — ")}
               </span>
             )}
             {business.phone && (

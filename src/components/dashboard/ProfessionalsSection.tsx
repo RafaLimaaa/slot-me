@@ -160,6 +160,11 @@ export function ProfessionalsSection({ businessId, services, professionals, onRe
                   {p.services.length > 0 && (
                     <p className="text-xs text-[#a1a1aa] mt-0.5 truncate">{p.services.map((s) => s.name).join(", ")}</p>
                   )}
+                  {p.phone && (
+                    <a href={`tel:${p.phone.replace(/\D/g, "")}`} className="text-xs text-[#2563EB] hover:underline mt-0.5 block">
+                      {formatPhone(p.phone)}
+                    </a>
+                  )}
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button onClick={() => startEdit(p)} className="text-[#a1a1aa] hover:text-[#2563EB] transition-colors"><Pencil size={13} /></button>

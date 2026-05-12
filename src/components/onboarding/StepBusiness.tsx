@@ -25,8 +25,11 @@ export function StepBusiness({ initial, onNext }: Props) {
     name: initial.name ?? "",
     slug: initial.slug ?? "",
     description: initial.description ?? "",
-    address: initial.address ?? "",
+    street: initial.street ?? "",
+    street_number: initial.street_number ?? "",
+    neighborhood: initial.neighborhood ?? "",
     city: initial.city ?? "",
+    zip_code: initial.zip_code ?? "",
     phone: initial.phone ?? "",
     maps_embed_url: initial.maps_embed_url ?? "",
   });
@@ -88,11 +91,18 @@ export function StepBusiness({ initial, onNext }: Props) {
         </p>
       </div>
       <Input label="Descrição" value={form.description} onChange={set("description")} />
-      <div className="grid grid-cols-2 gap-3">
-        <Input label="Endereço" value={form.address} onChange={set("address")} />
-        <Input label="Cidade" value={form.city} onChange={set("city")} />
-      </div>
       <Input label="Telefone" value={form.phone} onChange={set("phone")} />
+      <Input label="Rua" value={form.street} onChange={set("street")} />
+      <div className="grid grid-cols-3 gap-3">
+        <div className="col-span-2">
+          <Input label="Bairro" value={form.neighborhood} onChange={set("neighborhood")} />
+        </div>
+        <Input label="Número" value={form.street_number} onChange={set("street_number")} />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <Input label="Cidade" value={form.city} onChange={set("city")} />
+        <Input label="CEP" value={form.zip_code} onChange={set("zip_code")} />
+      </div>
       <Input label="Link embed Google Maps (opcional)" value={form.maps_embed_url} onChange={set("maps_embed_url")} />
       <Button type="submit" loading={loading} className="w-full mt-2">
         Próximo

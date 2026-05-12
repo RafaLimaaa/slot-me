@@ -1,7 +1,7 @@
 import { type HTMLAttributes } from "react";
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  variant?: "default" | "success" | "warning" | "danger";
+  variant?: "default" | "success" | "warning" | "danger" | "orange";
 }
 
 export function Badge({ variant = "default", className = "", children, ...props }: BadgeProps) {
@@ -10,6 +10,7 @@ export function Badge({ variant = "default", className = "", children, ...props 
     success: "bg-[#dcfce7] text-[#16a34a]",
     warning: "bg-[#fef9c3] text-[#ca8a04]",
     danger: "bg-[#fee2e2] text-[#DC2626]",
+    orange: "bg-[#431407] text-[#fb923c]",
   };
 
   return (

@@ -7,7 +7,11 @@ export interface Business {
   slug: string;
   description: string | null;
   address: string | null;
+  street: string | null;
+  street_number: string | null;
+  neighborhood: string | null;
   city: string | null;
+  zip_code: string | null;
   phone: string | null;
   cover_url: string | null;
   logo_url: string | null;
@@ -59,7 +63,7 @@ export interface BlockedPeriod {
   created_at: string;
 }
 
-export type AppointmentStatus = "scheduled" | "completed" | "cancelled";
+export type AppointmentStatus = "scheduled" | "completed" | "cancelled" | "no_show";
 
 export interface Appointment {
   id: string;
@@ -122,8 +126,11 @@ export interface BusinessFormData {
   name: string;
   slug: string;
   description: string;
-  address: string;
+  street: string;
+  street_number: string;
+  neighborhood: string;
   city: string;
+  zip_code: string;
   phone: string;
   maps_embed_url: string;
 }

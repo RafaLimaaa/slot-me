@@ -44,8 +44,11 @@ export function OnboardingFlow({ userId }: { userId: string }) {
         name: businessData.name,
         slug: businessData.slug,
         description: businessData.description || null,
-        address: businessData.address || null,
+        street: businessData.street || null,
+        street_number: businessData.street_number || null,
+        neighborhood: businessData.neighborhood || null,
         city: businessData.city || null,
+        zip_code: businessData.zip_code || null,
         phone: businessData.phone || null,
         maps_embed_url: businessData.maps_embed_url || null,
       })
