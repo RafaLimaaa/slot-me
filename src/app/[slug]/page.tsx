@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { BusinessHeader } from "@/components/public/BusinessHeader";
 import { ServiceList } from "@/components/public/ServiceList";
@@ -9,6 +10,44 @@ import { Button } from "@/components/ui/Button";
 
 interface Props {
   params: { slug: string };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const supabase = createServerSupabaseClient();
+  const { data } = await supabase
+    .from("businesses")
+    .select("name, description, cover_url, city, slug")
+    .eq("slug", params.slug)
+    .single();
+
+  if (!data) return { title: "Página não encontrada" };
+
+  const title = data.name;
+  const description =
+    data.description ??
+    `Agende online com ${data.name}${data.city ? ` em ${data.city}` : ""}.`;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://slotme.vercel.app";
+  const pageUrl = `${appUrl}/${data.slug}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      type: "website",
+      ...(data.cover_url && {
+        images: [{ url: data.cover_url, width: 1200, height: 630, alt: title }],
+      }),
+    },
+    twitter: {
+      card: data.cover_url ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(data.cover_url && { images: [data.cover_url] }),
+    },
+  };
 }
 
 export default async function BusinessPage({ params }: Props) {

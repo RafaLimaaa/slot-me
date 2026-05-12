@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { notifyClientOfCancellation } from "@/app/actions";
 import type { AppointmentWithDetails, AppointmentStatus, Professional } from "@/types";
 
 const DAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
@@ -150,6 +151,9 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
                 onClick={async () => {
                   setUpdating(true);
                   await onUpdateStatus(selected.id, "cancelled");
+                  notifyClientOfCancellation(selected.id).catch((e) =>
+                    console.error("[WeeklyCalendar] cancel email:", e)
+                  );
                   setUpdating(false);
                   setSelected(null);
                 }}

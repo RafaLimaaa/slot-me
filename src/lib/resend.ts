@@ -179,6 +179,39 @@ export async function sendNewAppointmentToOwner(
   }
 }
 
+// ─── Email de cancelamento para o cliente ────────────────────────────────────
+
+export async function sendCancellationToClient(
+  appt: AppointmentWithDetails,
+  business: Business,
+  appUrl: string
+): Promise<{ error?: string }> {
+  const rebookUrl = `${appUrl}/${business.slug}/agendar`;
+
+  const content = `
+    <h2 style="margin:0 0 8px;color:#09090b;font-size:22px;font-weight:700;">Agendamento cancelado</h2>
+    <p style="margin:0;color:#6b7280;font-size:15px;">Seu agendamento em <strong style="color:#09090b;">${business.name}</strong> foi cancelado.</p>
+    ${appointmentSummary(appt, business)}
+    <div style="margin-top:24px;">
+      ${actionButton("Agendar novamente", rebookUrl)}
+    </div>`;
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: FROM,
+      to: appt.client_email,
+      subject: `Agendamento cancelado — ${business.name}`,
+      html: baseTemplate(content),
+    });
+    console.log("[Resend] sendCancellationToClient →", { data, error, to: appt.client_email });
+    if (error) return { error: "Falha ao notificar o cliente sobre o cancelamento." };
+    return {};
+  } catch (e) {
+    console.error("[Resend] sendCancellationToClient exception:", e);
+    return { error: "Falha ao notificar o cliente sobre o cancelamento." };
+  }
+}
+
 // ─── Email de cancelamento para o dono ───────────────────────────────────────
 
 export async function sendCancellationToOwner(

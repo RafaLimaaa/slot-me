@@ -29,7 +29,7 @@ export default async function SuccessPage({ params, searchParams }: Props) {
     .eq("id", appointment.business_id)
     .single();
 
-  if (!business) notFound();
+  if (!business || business.slug !== params.slug) notFound();
 
   return (
     <BookingSuccess

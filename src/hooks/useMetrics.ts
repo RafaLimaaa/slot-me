@@ -42,7 +42,7 @@ export function useMetrics(businessId: string | undefined) {
 
     const totalWeek = (weekAppts ?? []).length;
     const completedOrScheduled = (weekAppts ?? []).filter(
-      (a) => a.status !== "cancelled"
+      (a) => a.status !== "cancelled" && a.status !== "no_show"
     ).length;
     const weeklyOccupancyRate =
       totalWeek > 0 ? Math.round((completedOrScheduled / totalWeek) * 100) : 0;

@@ -5,6 +5,7 @@ import { Phone, CheckCircle, X, UserX } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
+import { notifyClientOfCancellation } from "@/app/actions";
 import type { AppointmentWithDetails, AppointmentStatus } from "@/types";
 
 interface Props {
@@ -39,6 +40,11 @@ export function AppointmentItem({ appointment: a, onUpdateStatus }: Props) {
       confirmModal === "complete" ? "completed" :
       confirmModal === "cancel" ? "cancelled" : "no_show";
     await onUpdateStatus(a.id, nextStatus);
+    if (nextStatus === "cancelled") {
+      notifyClientOfCancellation(a.id).catch((e) =>
+        console.error("[AppointmentItem] cancel email:", e)
+      );
+    }
     setLoading(false);
     setConfirmModal(null);
   }

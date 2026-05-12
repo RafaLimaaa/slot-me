@@ -6,6 +6,7 @@ import { AlertCircle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
 import { createClient } from "@/lib/supabase";
+import { notifyOwnerOfCancellation } from "@/app/actions";
 import type { AppointmentWithDetails } from "@/types";
 
 export default function CancelPage() {
@@ -42,7 +43,12 @@ export default function CancelPage() {
       .eq("id", appt.id);
 
     if (err) { setError("Erro ao cancelar. Tente novamente."); }
-    else { setDone(true); }
+    else {
+      setDone(true);
+      notifyOwnerOfCancellation(appt.id).catch((e) =>
+        console.error("[cancelar] notify owner:", e)
+      );
+    }
     setCancelling(false);
   }
 
