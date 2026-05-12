@@ -22,9 +22,17 @@ const FIELDS: [keyof Form, string][] = [
   ["address", "Endereço"], ["description", "Descrição"], ["maps_embed_url", "Link Google Maps"],
 ];
 
+function formatPhone(value: string): string {
+  const d = value.replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 2) return d.length ? `(${d}` : "";
+  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
 export function BusinessSection({ business, onRefetch }: Props) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [phoneError, setPhoneError] = useState<string | undefined>();
   const [form, setForm] = useState<Form>({
     name: "", slug: "", description: "", address: "", city: "", phone: "", maps_embed_url: "",
   });
@@ -34,12 +42,18 @@ export function BusinessSection({ business, onRefetch }: Props) {
     setForm({
       name: business.name, slug: business.slug, description: business.description ?? "",
       address: business.address ?? "", city: business.city ?? "",
-      phone: business.phone ?? "", maps_embed_url: business.maps_embed_url ?? "",
+      phone: formatPhone(business.phone ?? ""), maps_embed_url: business.maps_embed_url ?? "",
     });
+    setPhoneError(undefined);
     setEditing(true);
   }
 
   async function save() {
+    const phoneDigits = form.phone.replace(/\D/g, "");
+    if (form.phone && phoneDigits.length < 10) {
+      setPhoneError("Informe um telefone válido com 10 ou 11 dígitos.");
+      return;
+    }
     setSaving(true);
     await supabase.from("businesses").update({
       name: form.name,
@@ -55,8 +69,11 @@ export function BusinessSection({ business, onRefetch }: Props) {
     setEditing(false);
   }
 
-  const upd = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm((f) => ({ ...f, [k]: e.target.value }));
+  const upd = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = k === "phone" ? formatPhone(e.target.value) : e.target.value;
+    setForm((f) => ({ ...f, [k]: value }));
+    if (k === "phone") setPhoneError(undefined);
+  };
 
   return (
     <section className="bg-[#18181b] border border-[#27272a] rounded-[12px] p-5">
@@ -72,7 +89,17 @@ export function BusinessSection({ business, onRefetch }: Props) {
       {editing ? (
         <div className="flex flex-col gap-3">
           {FIELDS.map(([key, label]) => (
-            <Input key={key} label={label} value={form[key]} onChange={upd(key)} />
+            <Input
+              key={key}
+              label={label}
+              value={form[key]}
+              onChange={upd(key)}
+              {...(key === "phone" && {
+                inputMode: "numeric" as const,
+                placeholder: "(00) 00000-0000",
+                error: phoneError,
+              })}
+            />
           ))}
           <div className="flex gap-2 mt-1">
             <Button type="button" variant="secondary" className="flex-1" onClick={() => setEditing(false)}>
@@ -86,8 +113,8 @@ export function BusinessSection({ business, onRefetch }: Props) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
           {[["Nome", business.name], ["Slug", business.slug], ["Cidade", business.city ?? "—"],
-            ["Telefone", business.phone ?? "—"], ["Endereço", business.address ?? "—"],
-            ["Descrição", business.description ?? "—"],
+            ["Telefone", business.phone ? formatPhone(business.phone) : "—"],
+            ["Endereço", business.address ?? "—"], ["Descrição", business.description ?? "—"],
           ].map(([k, v]) => (
             <div key={k}>
               <p className="text-[#a1a1aa] text-xs mb-0.5">{k}</p>

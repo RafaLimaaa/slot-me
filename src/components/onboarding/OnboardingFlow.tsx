@@ -83,6 +83,7 @@ export function OnboardingFlow({ userId }: { userId: string }) {
           business_id: business.id,
           name: p.name,
           specialty: p.specialty || null,
+          phone: p.phone || null,
         }))
       )
       .select();

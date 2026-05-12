@@ -14,8 +14,15 @@ interface Props {
   onRefetch: () => Promise<void>;
 }
 
-type Form = { name: string; specialty: string; service_ids: string[] };
-const EMPTY: Form = { name: "", specialty: "", service_ids: [] };
+type Form = { name: string; specialty: string; phone: string; service_ids: string[] };
+const EMPTY: Form = { name: "", specialty: "", phone: "", service_ids: [] };
+
+function formatPhone(value: string): string {
+  const d = value.replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 2) return d.length ? `(${d}` : "";
+  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
 
 const inputCls = "w-full rounded-[10px] border border-[#27272a] bg-[#09090b] px-3 py-2 text-sm text-[#fafafa] outline-none focus:border-[#2563EB] placeholder:text-[#6b7280]";
 
@@ -53,6 +60,8 @@ function ProfForm({ form, services, onChange, onSave, onCancel, saving }: {
         onChange={(e) => onChange({ ...form, name: e.target.value })} />
       <input className={inputCls} placeholder="Especialidade (opcional)" value={form.specialty}
         onChange={(e) => onChange({ ...form, specialty: e.target.value })} />
+      <input className={inputCls} placeholder="Telefone (opcional)" value={form.phone}
+        inputMode="numeric" onChange={(e) => onChange({ ...form, phone: formatPhone(e.target.value) })} />
       {services.length > 0 && (
         <>
           <p className="text-xs text-[#a1a1aa]">Serviços</p>
@@ -80,7 +89,7 @@ export function ProfessionalsSection({ businessId, services, professionals, onRe
   async function handleAdd() {
     setSaving(true);
     const { data: prof } = await supabase.from("professionals")
-      .insert({ business_id: businessId, name: addForm.name, specialty: addForm.specialty || null })
+      .insert({ business_id: businessId, name: addForm.name, specialty: addForm.specialty || null, phone: addForm.phone || null })
       .select().single();
     if (prof && addForm.service_ids.length > 0) {
       await supabase.from("professional_services").insert(
@@ -93,13 +102,13 @@ export function ProfessionalsSection({ businessId, services, professionals, onRe
 
   function startEdit(p: ProfessionalWithServices) {
     setEditingId(p.id);
-    setEditForm({ name: p.name, specialty: p.specialty ?? "", service_ids: p.services.map((s) => s.id) });
+    setEditForm({ name: p.name, specialty: p.specialty ?? "", phone: p.phone ?? "", service_ids: p.services.map((s) => s.id) });
   }
 
   async function handleEdit() {
     if (!editingId) return;
     setSaving(true);
-    await supabase.from("professionals").update({ name: editForm.name, specialty: editForm.specialty || null }).eq("id", editingId);
+    await supabase.from("professionals").update({ name: editForm.name, specialty: editForm.specialty || null, phone: editForm.phone || null }).eq("id", editingId);
     await supabase.from("professional_services").delete().eq("professional_id", editingId);
     if (editForm.service_ids.length > 0) {
       await supabase.from("professional_services").insert(

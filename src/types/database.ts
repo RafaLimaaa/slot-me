@@ -38,6 +38,7 @@ export type Database = {
           name: string;
           photo_url: string | null;
           specialty: string | null;
+          phone: string | null;
           created_at: string;
         };
         Insert: {
@@ -45,6 +46,7 @@ export type Database = {
           name: string;
           photo_url?: string | null;
           specialty?: string | null;
+          phone?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["professionals"]["Insert"]>;
         Relationships: [

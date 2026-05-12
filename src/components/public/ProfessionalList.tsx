@@ -1,6 +1,12 @@
 import Image from "next/image";
 import type { Professional } from "@/types";
 
+function formatPhone(phone: string): string {
+  const d = phone.replace(/\D/g, "");
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
 export function ProfessionalList({ professionals }: { professionals: Professional[] }) {
   return (
     <div>
@@ -21,6 +27,14 @@ export function ProfessionalList({ professionals }: { professionals: Professiona
               <p className="text-[#09090b] font-medium text-sm">{p.name}</p>
               {p.specialty && (
                 <p className="text-[#6b7280] text-xs">{p.specialty}</p>
+              )}
+              {p.phone && (
+                <a
+                  href={`tel:${p.phone.replace(/\D/g, "")}`}
+                  className="text-[#2563EB] text-xs hover:underline"
+                >
+                  {formatPhone(p.phone)}
+                </a>
               )}
             </div>
           </div>

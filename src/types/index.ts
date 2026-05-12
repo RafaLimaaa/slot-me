@@ -21,6 +21,7 @@ export interface Professional {
   name: string;
   photo_url: string | null;
   specialty: string | null;
+  phone: string | null;
   created_at: string;
 }
 
@@ -145,6 +146,7 @@ export interface ServiceFormData {
 export interface ProfessionalFormData {
   name: string;
   specialty: string;
+  phone: string;
   service_ids: string[];
 }
 

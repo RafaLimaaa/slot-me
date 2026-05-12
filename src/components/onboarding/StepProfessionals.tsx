@@ -14,7 +14,14 @@ interface Props {
   loading: boolean;
 }
 
-const EMPTY = (): ProfessionalFormData => ({ name: "", specialty: "", service_ids: [] });
+const EMPTY = (): ProfessionalFormData => ({ name: "", specialty: "", phone: "", service_ids: [] });
+
+function formatPhone(value: string): string {
+  const d = value.replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 2) return d.length ? `(${d}` : "";
+  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
 
 export function StepProfessionals({ services, initial, onFinish, onBack, loading }: Props) {
   const [professionals, setProfessionals] = useState<ProfessionalFormData[]>(
@@ -72,6 +79,12 @@ export function StepProfessionals({ services, initial, onFinish, onBack, loading
             placeholder="Especialidade (opcional)"
             value={p.specialty}
             onChange={(e) => update(i, "specialty", e.target.value)}
+          />
+          <Input
+            placeholder="Telefone (opcional)"
+            inputMode="numeric"
+            value={p.phone}
+            onChange={(e) => update(i, "phone", formatPhone(e.target.value))}
           />
           <div>
             <p className="text-xs font-medium text-[#6b7280] mb-2">Serviços que realiza</p>
