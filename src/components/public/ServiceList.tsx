@@ -9,7 +9,7 @@ export function ServiceList({ services }: { services: Service[] }) {
         {services.map((s) => (
           <div
             key={s.id}
-            className="border border-[#e2e8f0] rounded-[12px] p-4 flex items-center justify-between hover:shadow-[0_0_0_1px_#2563EB,0_0_16px_rgba(37,99,235,0.1)] transition-shadow duration-200"
+            className="border border-[#e2e8f0] rounded-[12px] p-4 flex items-center justify-between hover:shadow-[0_0_0_1px_#C2410C,0_0_16px_rgba(194,65,12,0.1)] transition-shadow duration-200"
           >
             <div>
               <p className="text-[#09090b] font-medium text-sm">{s.name}</p>

@@ -145,7 +145,7 @@ export function OnboardingFlow({ userId }: { userId: string }) {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-white rounded-[20px] shadow-[0_4px_24px_rgba(37,99,235,0.08)] p-8">
+      <div className="w-full max-w-lg bg-white rounded-[20px] shadow-[0_4px_24px_rgba(194,65,12,0.08)] p-8">
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xl font-bold text-[#09090b]">Configurar negócio</span>

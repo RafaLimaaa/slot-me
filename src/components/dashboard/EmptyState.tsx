@@ -71,7 +71,7 @@ export function EmptyState({ business, serviceCount, professionalCount }: Props)
         <h3 className="text-[#fafafa] font-semibold mb-1">Primeiros passos</h3>
         <div className="w-full h-1.5 bg-[#27272a] rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#2563EB] rounded-full transition-all duration-300"
+            className="h-full bg-[#C2410C] rounded-full transition-all duration-300"
             style={{ width: `${(doneCount / CHECKLIST.length) * 100}%` }}
           />
         </div>
@@ -94,7 +94,7 @@ export function EmptyState({ business, serviceCount, professionalCount }: Props)
                 {label}
               </span>
               {!completed[key] && (
-                <ChevronRight size={14} className="text-[#a1a1aa] group-hover:text-[#2563EB] transition-colors shrink-0" />
+                <ChevronRight size={14} className="text-[#a1a1aa] group-hover:text-[#C2410C] transition-colors shrink-0" />
               )}
             </button>
           </li>
@@ -105,7 +105,7 @@ export function EmptyState({ business, serviceCount, professionalCount }: Props)
         <span className="text-[#a1a1aa] text-xs truncate flex-1">{publicUrl}</span>
         <button
           onClick={copy}
-          className="text-[#a1a1aa] hover:text-[#2563EB] transition-colors shrink-0"
+          className="text-[#a1a1aa] hover:text-[#C2410C] transition-colors shrink-0"
         >
           {copied ? <Check size={15} className="text-[#16a34a]" /> : <Copy size={15} />}
         </button>

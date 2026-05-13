@@ -76,10 +76,10 @@ export function Calendar({ selected, onSelect, disabledDates = [], minDate }: Ca
               onClick={() => onSelect(iso)}
               className={`mx-auto w-9 h-9 rounded-full text-sm transition-all duration-150
                 ${isSelected
-                  ? "bg-[#2563EB] text-white font-semibold"
+                  ? "bg-[#C2410C] text-white font-semibold"
                   : isDisabled
                     ? "text-[#d1d5db] cursor-not-allowed"
-                    : "text-[#09090b] hover:bg-[#eff6ff] hover:text-[#2563EB]"
+                    : "text-[#09090b] hover:bg-[#fff7ed] hover:text-[#C2410C]"
                 }`}
             >
               {day}

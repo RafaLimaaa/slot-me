@@ -47,8 +47,8 @@ export function StepDateTime({
                   onClick={() => onSelectTime(slot)}
                   className={`py-2 rounded-[10px] text-sm font-medium transition-all duration-150
                     ${selectedTime === slot
-                      ? "bg-[#2563EB] text-white shadow-[0_0_0_1px_#2563EB]"
-                      : "border border-[#e2e8f0] text-[#09090b] hover:border-[#2563EB] hover:text-[#2563EB]"
+                      ? "bg-[#C2410C] text-white shadow-[0_0_0_1px_#C2410C]"
+                      : "border border-[#e2e8f0] text-[#09090b] hover:border-[#C2410C] hover:text-[#C2410C]"
                     }`}
                 >
                   {slot}

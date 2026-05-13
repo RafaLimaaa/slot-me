@@ -64,7 +64,7 @@ export function AppointmentItem({ appointment: a, onUpdateStatus }: Props) {
             {a.service.name} · {a.professional.name}
           </p>
         </div>
-        <a href={`tel:${a.client_phone}`} className="text-[#a1a1aa] hover:text-[#2563EB] transition-colors shrink-0">
+        <a href={`tel:${a.client_phone}`} className="text-[#a1a1aa] hover:text-[#C2410C] transition-colors shrink-0">
           <Phone size={15} />
         </a>
         <Badge variant={badge.variant}>{badge.label}</Badge>

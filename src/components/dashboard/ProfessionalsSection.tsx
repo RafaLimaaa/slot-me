@@ -24,7 +24,7 @@ function formatPhone(value: string): string {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
-const inputCls = "w-full rounded-[10px] border border-[#27272a] bg-[#09090b] px-3 py-2 text-sm text-[#fafafa] outline-none focus:border-[#2563EB] placeholder:text-[#6b7280]";
+const inputCls = "w-full rounded-[10px] border border-[#27272a] bg-[#09090b] px-3 py-2 text-sm text-[#fafafa] outline-none focus:border-[#C2410C] placeholder:text-[#6b7280]";
 
 function toggle(ids: string[], id: string) {
   return ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id];
@@ -39,7 +39,7 @@ function ServiceCheckboxes({ services, selectedIds, onChange }: {
         const checked = selectedIds.includes(s.id);
         return (
           <label key={s.id} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border cursor-pointer transition-all
-            ${checked ? "bg-[#2563EB] text-white border-[#2563EB]" : "border-[#27272a] text-[#a1a1aa] hover:border-[#2563EB]"}`}>
+            ${checked ? "bg-[#C2410C] text-white border-[#C2410C]" : "border-[#27272a] text-[#a1a1aa] hover:border-[#C2410C]"}`}>
             <input type="checkbox" className="sr-only" checked={checked}
               onChange={() => onChange(toggle(selectedIds, s.id))} />
             {s.name}
@@ -130,7 +130,7 @@ export function ProfessionalsSection({ businessId, services, professionals, onRe
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-[#fafafa] font-semibold">Profissionais</h2>
         <button onClick={() => { setAdding((v) => !v); setAddForm(EMPTY); }}
-          className="flex items-center gap-1.5 text-xs text-[#2563EB] hover:opacity-70 transition-opacity">
+          className="flex items-center gap-1.5 text-xs text-[#C2410C] hover:opacity-70 transition-opacity">
           <Plus size={13} /> Adicionar profissional
         </button>
       </div>
@@ -161,13 +161,13 @@ export function ProfessionalsSection({ businessId, services, professionals, onRe
                     <p className="text-xs text-[#a1a1aa] mt-0.5 truncate">{p.services.map((s) => s.name).join(", ")}</p>
                   )}
                   {p.phone && (
-                    <a href={`tel:${p.phone.replace(/\D/g, "")}`} className="text-xs text-[#2563EB] hover:underline mt-0.5 block">
+                    <a href={`tel:${p.phone.replace(/\D/g, "")}`} className="text-xs text-[#C2410C] hover:underline mt-0.5 block">
                       {formatPhone(p.phone)}
                     </a>
                   )}
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  <button onClick={() => startEdit(p)} className="text-[#a1a1aa] hover:text-[#2563EB] transition-colors"><Pencil size={13} /></button>
+                  <button onClick={() => startEdit(p)} className="text-[#a1a1aa] hover:text-[#C2410C] transition-colors"><Pencil size={13} /></button>
                   <button onClick={() => setConfirmId(p.id)} className="text-[#a1a1aa] hover:text-[#dc2626] transition-colors"><Trash2 size={13} /></button>
                 </div>
               </div>

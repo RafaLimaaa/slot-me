@@ -48,7 +48,7 @@ export function BusinessHeader({ business }: { business: Business }) {
             {business.phone && (
               <a
                 href={`tel:${business.phone.replace(/\D/g, "")}`}
-                className="flex items-center gap-1 text-xs text-[#6b7280] hover:text-[#2563EB] transition-colors"
+                className="flex items-center gap-1 text-xs text-[#6b7280] hover:text-[#C2410C] transition-colors"
               >
                 <Phone size={12} /> {formatPhone(business.phone)}
               </a>

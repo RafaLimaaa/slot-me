@@ -102,7 +102,7 @@ export function WorkingHoursSection({ professionals, workingHours, onRefetch }: 
                     type="checkbox"
                     checked={h.enabled}
                     onChange={(e) => update(i, "enabled", e.target.checked)}
-                    className="accent-[#2563EB] w-4 h-4"
+                    className="accent-[#C2410C] w-4 h-4"
                   />
                   <span className="text-sm text-[#a1a1aa]">{DAYS[h.day_of_week]}</span>
                 </label>

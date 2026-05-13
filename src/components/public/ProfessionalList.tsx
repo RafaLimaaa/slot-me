@@ -31,7 +31,7 @@ export function ProfessionalList({ professionals }: { professionals: Professiona
               {p.phone && (
                 <a
                   href={`tel:${p.phone.replace(/\D/g, "")}`}
-                  className="text-[#2563EB] text-xs hover:underline"
+                  className="text-[#C2410C] text-xs hover:underline"
                 >
                   {formatPhone(p.phone)}
                 </a>

@@ -10,7 +10,7 @@ export function CtaSection() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(37,99,235,0.22) 0%, transparent 70%)",
+            "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(194,65,12,0.22) 0%, transparent 70%)",
         }}
       />
       <div

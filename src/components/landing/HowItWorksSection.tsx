@@ -23,7 +23,7 @@ export function HowItWorksSection() {
     <section id="como-funciona" className="bg-[#FDFAF5] py-24">
       <div className="max-w-6xl mx-auto px-6">
         <FadeIn className="text-center mb-16">
-          <p className="text-[#2563EB] text-[11px] font-bold uppercase tracking-[0.16em] mb-3">
+          <p className="text-[#C2410C] text-[11px] font-bold uppercase tracking-[0.16em] mb-3">
             Como funciona
           </p>
           <h2 className="text-3xl lg:text-4xl font-bold text-[#1A1A1A] tracking-tight">
@@ -42,7 +42,7 @@ export function HowItWorksSection() {
           {STEPS.map(({ n, title, desc }, i) => (
             <FadeIn key={n} delay={i * 120} className="flex flex-col items-center text-center">
               <div className="w-[72px] h-[72px] rounded-full bg-[#F5F0E8] border-2 border-[#E7E0D5] flex items-center justify-center mb-6 relative z-10">
-                <span className="text-xl font-bold text-[#2563EB]">{n}</span>
+                <span className="text-xl font-bold text-[#C2410C]">{n}</span>
               </div>
               <h3 className="text-[1rem] font-bold text-[#1A1A1A] mb-2">{title}</h3>
               <p className="text-[#78716C] text-sm leading-relaxed">{desc}</p>

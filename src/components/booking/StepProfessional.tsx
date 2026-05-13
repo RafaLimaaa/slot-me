@@ -23,8 +23,8 @@ export function StepProfessional({ professionals, selectedServiceId, selected, o
             onClick={() => onSelect(p)}
             className={`text-left border rounded-[12px] p-4 flex items-center gap-3 transition-all duration-150
               ${active
-                ? "border-[#2563EB] shadow-[0_0_0_1px_#2563EB]"
-                : "border-[#e2e8f0] hover:border-[#93c5fd]"
+                ? "border-[#C2410C] shadow-[0_0_0_1px_#C2410C]"
+                : "border-[#e2e8f0] hover:border-[#fdba74]"
               }`}
           >
             <div className="w-12 h-12 rounded-full bg-[#f1f5f9] overflow-hidden flex items-center justify-center shrink-0">

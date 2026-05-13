@@ -90,7 +90,7 @@ export default function CancelPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] p-4">
-      <div className="w-full max-w-sm bg-white rounded-[20px] shadow-[0_4px_24px_rgba(37,99,235,0.08)] p-8">
+      <div className="w-full max-w-sm bg-white rounded-[20px] shadow-[0_4px_24px_rgba(194,65,12,0.08)] p-8">
         <h1 className="text-lg font-bold text-[#09090b] mb-4">Cancelar agendamento</h1>
         <div className="bg-[#f8fafc] rounded-[12px] p-4 mb-6 text-sm flex flex-col gap-2">
           <div className="flex justify-between"><span className="text-[#6b7280]">Serviço</span><span className="font-medium">{appt.service.name}</span></div>

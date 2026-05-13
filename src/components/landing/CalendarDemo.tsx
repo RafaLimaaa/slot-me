@@ -38,23 +38,23 @@ export function CalendarDemo() {
         aria-hidden
         className="absolute inset-0 rounded-[28px] pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 90% 70% at 50% 35%, rgba(37,99,235,0.38), transparent)",
+          background: "radial-gradient(ellipse 90% 70% at 50% 35%, rgba(194,65,12,0.38), transparent)",
           filter: "blur(36px)",
           transform: "scale(1.2)",
         }}
       />
-      <div className="relative rounded-[20px] bg-[#0D0D18] border border-[#1B1E38] overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.65),0_0_0_1px_rgba(37,99,235,0.08)]">
-        <div className="px-5 pt-5 pb-4 border-b border-[#1B1E38]">
-          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#3D4F85] mb-2">
+      <div className="relative rounded-[20px] bg-[#110800] border border-[#1E0A00] overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.65),0_0_0_1px_rgba(194,65,12,0.08)]">
+        <div className="px-5 pt-5 pb-4 border-b border-[#1E0A00]">
+          <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#7C3D12] mb-2">
             Quinta-feira, 15 mai
           </p>
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-full bg-[#1C2044] flex items-center justify-center text-[11px] font-bold text-[#6B7EBC] shrink-0">
+            <div className="w-7 h-7 rounded-full bg-[#1C0800] flex items-center justify-center text-[11px] font-bold text-[#C07850] shrink-0">
               C
             </div>
             <div>
               <p className="text-[#E2E8F0] text-sm font-semibold leading-tight">Carlos</p>
-              <p className="text-[#3D4F85] text-[11px]">Corte + Barba · 50 min</p>
+              <p className="text-[#7C3D12] text-[11px]">Corte + Barba · 50 min</p>
             </div>
           </div>
         </div>
@@ -65,9 +65,9 @@ export function CalendarDemo() {
             if (!slot.available) {
               return (
                 <div key={slot.time} className="flex items-center gap-3 px-3 py-1.5 opacity-20">
-                  <span className="text-[#6B7EBC] text-sm font-mono w-11">{slot.time}</span>
-                  <div className="flex-1 h-px bg-[#1B1E38]" />
-                  <span className="text-[#3D4F85] text-[10px]">ocupado</span>
+                  <span className="text-[#C07850] text-sm font-mono w-11">{slot.time}</span>
+                  <div className="flex-1 h-px bg-[#1E0A00]" />
+                  <span className="text-[#7C3D12] text-[10px]">ocupado</span>
                 </div>
               );
             }
@@ -78,22 +78,22 @@ export function CalendarDemo() {
                 style={{
                   background: isSel
                     ? confirming
-                      ? "rgba(37,99,235,0.5)"
-                      : "rgba(37,99,235,0.82)"
+                      ? "rgba(194,65,12,0.5)"
+                      : "rgba(194,65,12,0.82)"
                     : "rgba(255,255,255,0.03)",
-                  boxShadow: isSel ? "0 0 18px rgba(37,99,235,0.32)" : "none",
+                  boxShadow: isSel ? "0 0 18px rgba(194,65,12,0.32)" : "none",
                   transform: isSel ? "scale(1.015)" : "scale(1)",
                 }}
               >
                 <span
                   className="text-sm font-mono w-11 transition-colors duration-300"
-                  style={{ color: isSel ? "#ffffff" : "#4B5FA0", fontWeight: isSel ? 700 : 400 }}
+                  style={{ color: isSel ? "#ffffff" : "#92400E", fontWeight: isSel ? 700 : 400 }}
                 >
                   {slot.time}
                 </span>
                 <span
                   className="flex-1 text-xs transition-colors duration-300"
-                  style={{ color: isSel ? "rgba(219,234,254,0.9)" : "#1E2B4A", fontWeight: isSel ? 500 : 400 }}
+                  style={{ color: isSel ? "rgba(255,255,255,0.85)" : "#5C2A0E", fontWeight: isSel ? 500 : 400 }}
                 >
                   {isSel ? (confirming ? "Confirmando..." : "Selecionado") : "disponível"}
                 </span>
@@ -114,8 +114,8 @@ export function CalendarDemo() {
           <div
             className="w-full py-3 rounded-[12px] text-center text-sm font-semibold transition-all duration-500 text-white"
             style={{
-              background: "linear-gradient(135deg, #1d4ed8, #2563EB, #3b82f6)",
-              boxShadow: "0 4px 20px rgba(37,99,235,0.4)",
+              background: "linear-gradient(135deg, #9a3412, #C2410C, #ea580c)",
+              boxShadow: "0 4px 20px rgba(194,65,12,0.4)",
               opacity: confirming ? 0.75 : 1,
             }}
           >

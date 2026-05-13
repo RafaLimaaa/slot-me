@@ -18,8 +18,8 @@ export function StepService({ services, selected, onSelect }: Props) {
             onClick={() => onSelect(s)}
             className={`text-left border rounded-[12px] p-4 transition-all duration-150
               ${active
-                ? "border-[#2563EB] shadow-[0_0_0_1px_#2563EB]"
-                : "border-[#e2e8f0] hover:border-[#93c5fd]"
+                ? "border-[#C2410C] shadow-[0_0_0_1px_#C2410C]"
+                : "border-[#e2e8f0] hover:border-[#fdba74]"
               }`}
           >
             <p className="font-medium text-[#09090b] text-sm">{s.name}</p>

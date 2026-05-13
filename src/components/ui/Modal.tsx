@@ -28,7 +28,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative w-full max-w-lg rounded-[20px] bg-white dark:bg-[#18181b] shadow-[0_4px_24px_rgba(37,99,235,0.08)] p-6">
+      <div className="relative w-full max-w-lg rounded-[20px] bg-white dark:bg-[#18181b] shadow-[0_4px_24px_rgba(194,65,12,0.08)] p-6">
         <div className="flex items-center justify-between mb-4">
           {title && (
             <h2 className="text-lg font-semibold text-[#09090b] dark:text-[#fafafa]">{title}</h2>

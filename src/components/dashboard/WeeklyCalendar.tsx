@@ -78,7 +78,7 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
 
           return (
             <div key={i} className="min-h-[120px]">
-              <div className={`text-center py-1 mb-1 rounded-[8px] text-xs ${isToday ? "bg-[#2563EB] text-white" : "text-[#a1a1aa]"}`}>
+              <div className={`text-center py-1 mb-1 rounded-[8px] text-xs ${isToday ? "bg-[#C2410C] text-white" : "text-[#a1a1aa]"}`}>
                 <div className="font-medium">{DAY_LABELS[i]}</div>
                 <div>{day.getDate()}</div>
               </div>
@@ -91,7 +91,7 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
                       ? "bg-[#450a0a] text-[#fca5a5] hover:bg-[#dc2626] hover:text-white"
                       : a.status === "no_show"
                       ? "bg-[#431407] text-[#fb923c] hover:bg-[#ea580c] hover:text-white"
-                      : "bg-[#1e3a5f] text-[#93c5fd] hover:bg-[#2563EB] hover:text-white";
+                      : "bg-[#431407] text-[#fdba74] hover:bg-[#C2410C] hover:text-white";
                   return (
                     <button
                       key={a.id}

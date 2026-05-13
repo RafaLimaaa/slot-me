@@ -20,9 +20,9 @@ function baseTemplate(content: string): string {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:32px 0;">
     <tr>
       <td align="center">
-        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(37,99,235,0.08);">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(194,65,12,0.08);">
           <tr>
-            <td style="background:#2563EB;padding:24px 32px;">
+            <td style="background:#C2410C;padding:24px 32px;">
               <span style="color:#ffffff;font-size:20px;font-weight:700;letter-spacing:-0.5px;">SlotMe</span>
             </td>
           </tr>
@@ -71,7 +71,7 @@ function appointmentSummary(
 }
 
 function actionButton(label: string, url: string, variant: "primary" | "secondary" = "primary"): string {
-  const bg = variant === "primary" ? "#2563EB" : "#f1f5f9";
+  const bg = variant === "primary" ? "#C2410C" : "#f1f5f9";
   const color = variant === "primary" ? "#ffffff" : "#09090b";
   return `<a href="${url}" style="display:inline-block;margin-top:8px;margin-right:8px;padding:10px 20px;background:${bg};color:${color};text-decoration:none;border-radius:8px;font-size:14px;font-weight:500;">${label}</a>`;
 }

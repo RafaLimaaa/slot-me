@@ -31,7 +31,7 @@ export function BookingSuccess({ appointment: a, business, slug, emailError }: P
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-[20px] shadow-[0_4px_24px_rgba(37,99,235,0.08)] p-8 text-center">
+      <div className="w-full max-w-md bg-white rounded-[20px] shadow-[0_4px_24px_rgba(194,65,12,0.08)] p-8 text-center">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 rounded-full bg-[#dcfce7] flex items-center justify-center">
             <CheckCircle size={32} className="text-[#16a34a]" />

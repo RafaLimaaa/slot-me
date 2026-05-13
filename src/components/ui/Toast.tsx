@@ -28,7 +28,7 @@ export function Toast({ toast, onDismiss }: ToastProps) {
     );
 
   return (
-    <div className="flex items-center gap-3 bg-white dark:bg-[#18181b] border border-[#e2e8f0] dark:border-[#27272a] rounded-[12px] px-4 py-3 shadow-[0_4px_24px_rgba(37,99,235,0.08)] min-w-[280px] max-w-[360px]">
+    <div className="flex items-center gap-3 bg-white dark:bg-[#18181b] border border-[#e2e8f0] dark:border-[#27272a] rounded-[12px] px-4 py-3 shadow-[0_4px_24px_rgba(194,65,12,0.08)] min-w-[280px] max-w-[360px]">
       {icon}
       <p className="text-sm text-[#09090b] dark:text-[#fafafa] flex-1">{toast.message}</p>
       <button onClick={() => onDismiss(toast.id)} className="text-[#6b7280] hover:text-[#09090b] dark:hover:text-[#fafafa]">

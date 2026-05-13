@@ -11,7 +11,7 @@ export function HeroSection() {
           <div>
             <FadeIn>
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-medium text-[#4A4035] bg-[#EBE5D8] border border-[#D4CAB8] mb-7">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB] shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C2410C] shrink-0" />
                 Agendamento online para negócios de serviços
               </div>
             </FadeIn>
@@ -19,7 +19,7 @@ export function HeroSection() {
             <FadeIn delay={80}>
               <h1 className="text-[2.7rem] lg:text-[3.4rem] font-bold text-[#1A1A1A] leading-[1.08] tracking-tight mb-5">
                 Sua agenda profissional,{" "}
-                <span className="text-[#2563EB]">pronta agora.</span>
+                <span className="text-[#C2410C]">pronta agora.</span>
               </h1>
             </FadeIn>
 

@@ -21,7 +21,7 @@ function parsePrice(v: string) {
   return parseFloat(v.replace(/\./g, "").replace(",", ".")) || 0;
 }
 
-const inputCls = "w-full rounded-[10px] border border-[#27272a] bg-[#09090b] px-3 py-2 text-sm text-[#fafafa] outline-none focus:border-[#2563EB] placeholder:text-[#6b7280]";
+const inputCls = "w-full rounded-[10px] border border-[#27272a] bg-[#09090b] px-3 py-2 text-sm text-[#fafafa] outline-none focus:border-[#C2410C] placeholder:text-[#6b7280]";
 
 interface Props { businessId: string; services: Service[]; onRefetch: () => Promise<void>; }
 type Form = { name: string; price: string; duration_minutes: number };
@@ -96,7 +96,7 @@ export function ServicesSection({ businessId, services, onRefetch }: Props) {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-[#fafafa] font-semibold">Serviços</h2>
         <button onClick={() => { setAdding((v) => !v); setAddForm(EMPTY); }}
-          className="flex items-center gap-1.5 text-xs text-[#2563EB] hover:opacity-70 transition-opacity">
+          className="flex items-center gap-1.5 text-xs text-[#C2410C] hover:opacity-70 transition-opacity">
           <Plus size={13} /> Adicionar serviço
         </button>
       </div>
@@ -123,7 +123,7 @@ export function ServicesSection({ businessId, services, onRefetch }: Props) {
                 <span className="text-[#fafafa]">{s.name}</span>
                 <div className="flex items-center gap-3">
                   <span className="text-[#a1a1aa] text-xs">{brl(s.price)} · {s.duration_minutes} min</span>
-                  <button onClick={() => startEdit(s)} className="text-[#a1a1aa] hover:text-[#2563EB] transition-colors"><Pencil size={13} /></button>
+                  <button onClick={() => startEdit(s)} className="text-[#a1a1aa] hover:text-[#C2410C] transition-colors"><Pencil size={13} /></button>
                   <button onClick={() => setConfirmId(s.id)} className="text-[#a1a1aa] hover:text-[#dc2626] transition-colors"><Trash2 size={13} /></button>
                 </div>
               </div>

@@ -111,7 +111,7 @@ export function BusinessSection({ business, onRefetch }: Props) {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-[#fafafa] font-semibold">Dados do negócio</h2>
         {!editing && (
-          <button onClick={startEdit} className="flex items-center gap-1.5 text-xs text-[#2563EB] hover:opacity-70 transition-opacity">
+          <button onClick={startEdit} className="flex items-center gap-1.5 text-xs text-[#C2410C] hover:opacity-70 transition-opacity">
             <Pencil size={13} /> Editar
           </button>
         )}

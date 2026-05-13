@@ -46,12 +46,12 @@ export function ImageUploadSection({ business, onRefetch }: Props) {
             <p className="text-xs text-[#a1a1aa]">{label}</p>
             <div
               onClick={() => ref.current?.click()}
-              className="relative flex items-center justify-center border border-dashed border-[#27272a] rounded-[10px] h-28 cursor-pointer hover:border-[#2563EB] transition-colors overflow-hidden group"
+              className="relative flex items-center justify-center border border-dashed border-[#27272a] rounded-[10px] h-28 cursor-pointer hover:border-[#C2410C] transition-colors overflow-hidden group"
             >
               {currentUrl ? (
                 <img src={currentUrl} alt={label} className="w-full h-full object-cover" />
               ) : (
-                <ImagePlus size={24} className="text-[#a1a1aa] group-hover:text-[#2563EB] transition-colors" />
+                <ImagePlus size={24} className="text-[#a1a1aa] group-hover:text-[#C2410C] transition-colors" />
               )}
               {uploading === type && (
                 <div className="absolute inset-0 bg-[#09090b]/80 flex items-center justify-center">

@@ -97,8 +97,8 @@ export function StepProfessionals({ services, initial, onFinish, onBack, loading
                     key={si}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border cursor-pointer transition-all
                       ${checked
-                        ? "bg-[#2563EB] text-white border-[#2563EB]"
-                        : "border-[#e2e8f0] text-[#6b7280] hover:border-[#2563EB] hover:text-[#2563EB]"
+                        ? "bg-[#C2410C] text-white border-[#C2410C]"
+                        : "border-[#e2e8f0] text-[#6b7280] hover:border-[#C2410C] hover:text-[#C2410C]"
                       }`}
                   >
                     <input
@@ -118,7 +118,7 @@ export function StepProfessionals({ services, initial, onFinish, onBack, loading
 
       <button
         onClick={add}
-        className="flex items-center gap-2 text-sm text-[#2563EB] hover:opacity-70 transition-opacity"
+        className="flex items-center gap-2 text-sm text-[#C2410C] hover:opacity-70 transition-opacity"
       >
         <Plus size={16} /> Adicionar profissional
       </button>

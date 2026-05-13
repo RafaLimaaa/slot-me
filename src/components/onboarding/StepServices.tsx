@@ -76,7 +76,7 @@ export function StepServices({ initial, onNext, onBack }: Props) {
                 value={s.price}
                 onChange={(e) => update(i, "price", formatPrice(e.target.value))}
                 placeholder="0,00"
-                className="w-full rounded-[12px] border border-[#e2e8f0] px-3 py-2.5 text-sm outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20"
+                className="w-full rounded-[12px] border border-[#e2e8f0] px-3 py-2.5 text-sm outline-none focus:border-[#C2410C] focus:ring-2 focus:ring-[#C2410C]/20"
               />
             </div>
             <Select
@@ -91,7 +91,7 @@ export function StepServices({ initial, onNext, onBack }: Props) {
 
       <button
         onClick={add}
-        className="flex items-center gap-2 text-sm text-[#2563EB] hover:opacity-70 transition-opacity"
+        className="flex items-center gap-2 text-sm text-[#C2410C] hover:opacity-70 transition-opacity"
       >
         <Plus size={16} /> Adicionar serviço
       </button>
