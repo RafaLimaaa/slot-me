@@ -1,38 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, User } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
-import { Button } from "@/components/ui/Button";
 import { notifyClientOfCancellation } from "@/app/actions";
 import type { AppointmentWithDetails, AppointmentStatus, Professional } from "@/types";
 
-const DAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+const DAY_LABELS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
+const START_HOUR = 7;
+const END_HOUR = 21;
+const HOUR_HEIGHT = 64;
+const TOTAL_HEIGHT = (END_HOUR - START_HOUR) * HOUR_HEIGHT;
+const HOURS = Array.from({ length: END_HOUR - START_HOUR }, (_, i) => START_HOUR + i);
 
-const STATUS_CARD: Record<AppointmentStatus, { bg: string; border: string; color: string }> = {
-  scheduled: { bg: "#9A3412",  border: "#C2410C", color: "#ffedd5" },
-  completed: { bg: "#1A3D2B",  border: "#3D6B4F", color: "#86efac" },
-  cancelled: { bg: "#3D0F0F",  border: "#7F1D1D", color: "#fca5a5" },
-  no_show:   { bg: "#3D2000",  border: "#92400E", color: "#fdba74" },
+const STATUS: Record<AppointmentStatus, { bg: string; border: string; color: string }> = {
+  scheduled: { bg: "#1a2744", border: "#3B82F6", color: "#93c5fd" },
+  completed: { bg: "#142a1e", border: "#22C55E", color: "#86efac" },
+  cancelled: { bg: "#2a1414", border: "#EF4444", color: "#fca5a5" },
+  no_show:   { bg: "#2a1f00", border: "#F59E0B", color: "#fde68a" },
 };
 
 const LEGEND = [
-  { label: "Agendado",       status: "scheduled" },
-  { label: "Concluído",      status: "completed" },
-  { label: "Cancelado",      status: "cancelled" },
-  { label: "Não compareceu", status: "no_show"   },
-] as const;
+  { label: "Agendado",       s: "scheduled" as AppointmentStatus },
+  { label: "Concluído",      s: "completed"  as AppointmentStatus },
+  { label: "Cancelado",      s: "cancelled"  as AppointmentStatus },
+  { label: "Não compareceu", s: "no_show"    as AppointmentStatus },
+];
 
 interface Props {
   appointments: AppointmentWithDetails[];
-  professionals: Pick<Professional, "id" | "name">[];
+  professionals: Pick<Professional, "id" | "name" | "photo_url">[];
   onUpdateStatus: (id: string, status: AppointmentStatus) => Promise<void>;
 }
 
-function weekDays(weekOffset: number): Date[] {
+function toISO(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function weekDays(offset: number): Date[] {
   const now = new Date();
   const start = new Date(now);
-  start.setDate(now.getDate() - now.getDay() + weekOffset * 7);
+  start.setDate(now.getDate() - now.getDay() + offset * 7);
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
@@ -40,129 +48,233 @@ function weekDays(weekOffset: number): Date[] {
   });
 }
 
-function toISO(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+function toMin(t: string): number {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
 }
 
 export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: Props) {
   const [weekOffset, setWeekOffset] = useState(0);
-  const [filterProfId, setFilterProfId] = useState<string>("all");
+  const [filterProfId, setFilterProfId] = useState("all");
   const [selected, setSelected] = useState<AppointmentWithDetails | null>(null);
   const [updating, setUpdating] = useState(false);
+  const [nowMin, setNowMin] = useState(() => {
+    const n = new Date();
+    return n.getHours() * 60 + n.getMinutes();
+  });
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      const n = new Date();
+      setNowMin(n.getHours() * 60 + n.getMinutes());
+    }, 60000);
+    return () => clearInterval(id);
+  }, []);
 
   const days = weekDays(weekOffset);
-  const filtered = appointments.filter(
-    (a) =>
-      (filterProfId === "all" || a.professional_id === filterProfId) &&
-      days.some((d) => toISO(d) === a.date)
+  const todayISO = toISO(new Date());
+  const isCurrentWeek = days.some(d => toISO(d) === todayISO);
+  const nowTop = (nowMin - START_HOUR * 60) / 60 * HOUR_HEIGHT;
+  const showNow = isCurrentWeek && nowTop >= 0 && nowTop <= TOTAL_HEIGHT;
+
+  const filtered = appointments.filter(a =>
+    (filterProfId === "all" || a.professional_id === filterProfId) &&
+    days.some(d => toISO(d) === a.date)
   );
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <button onClick={() => setWeekOffset((w) => w - 1)} className="p-1.5 rounded-[8px] hover:bg-[#1E1E1E] transition-colors">
-            <ChevronLeft size={16} className="text-[#6B7280]" />
-          </button>
-          <span className="text-sm text-[#fafafa] font-medium">
-            {days[0].toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })} —{" "}
-            {days[6].toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
-          </span>
-          <button onClick={() => setWeekOffset((w) => w + 1)} className="p-1.5 rounded-[8px] hover:bg-[#1E1E1E] transition-colors">
-            <ChevronRight size={16} className="text-[#6B7280]" />
-          </button>
-        </div>
-        <select
-          value={filterProfId}
-          onChange={(e) => setFilterProfId(e.target.value)}
-          className="bg-[#1E1E1E] border border-[#2A2A2A] text-[#fafafa] text-sm rounded-[8px] px-3 py-1.5 outline-none"
-        >
-          <option value="all">Todos os profissionais</option>
-          {professionals.map((p) => (
-            <option key={p.id} value={p.id}>{p.name}</option>
-          ))}
-        </select>
+      {/* Week navigation */}
+      <div className="flex items-center gap-2 mb-4">
+        <button onClick={() => setWeekOffset(w => w - 1)} className="p-1.5 rounded-[8px] hover:bg-[#1E1E1E] transition-colors">
+          <ChevronLeft size={16} className="text-[#6B7280]" />
+        </button>
+        <span className="text-sm text-[#fafafa] font-medium">
+          {days[0].toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })} —{" "}
+          {days[6].toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
+        </span>
+        <button onClick={() => setWeekOffset(w => w + 1)} className="p-1.5 rounded-[8px] hover:bg-[#1E1E1E] transition-colors">
+          <ChevronRight size={16} className="text-[#6B7280]" />
+        </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1">
-        {days.map((day, i) => {
-          const iso = toISO(day);
-          const dayAppts = filtered.filter((a) => a.date === iso);
-          const isToday = iso === toISO(new Date());
+      {/* Professional chips */}
+      <div className="flex flex-wrap gap-2 mb-5">
+        {[{ id: "all", name: "Todos", photo_url: null }, ...professionals].map(prof => {
+          const active = filterProfId === prof.id;
           return (
-            <div key={i} className="min-h-[120px]">
-              <div className={`text-center py-1 mb-1 rounded-[8px] text-xs ${isToday ? "bg-[#C2410C] text-white" : "text-[#6B7280]"}`}>
-                <div className="font-medium">{DAY_LABELS[i]}</div>
-                <div>{day.getDate()}</div>
+            <button
+              key={prof.id}
+              onClick={() => setFilterProfId(prof.id)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all"
+              style={{
+                borderColor: active ? "#C2410C" : "#2A2A2A",
+                background:  active ? "#1E1E1E"  : "#161616",
+                color:       active ? "#fafafa"  : "#6B7280",
+              }}
+            >
+              {prof.photo_url ? (
+                <img src={prof.photo_url} alt={prof.name} className="w-5 h-5 rounded-full object-cover shrink-0" />
+              ) : prof.id !== "all" ? (
+                <span className="w-5 h-5 rounded-full bg-[#2A2A2A] flex items-center justify-center text-[9px] font-bold shrink-0 text-[#6B7280]">
+                  {prof.name[0].toUpperCase()}
+                </span>
+              ) : null}
+              {prof.name}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Day headers (outside scroll) */}
+      <div className="flex border-b border-[#2A2A2A]/20">
+        <div className="w-14 shrink-0" />
+        {days.map((day, i) => {
+          const isToday = toISO(day) === todayISO;
+          return (
+            <div key={i} className="flex-1 text-center py-2">
+              <div className="text-[#6B7280] text-[10px] uppercase font-semibold tracking-wider mb-1">
+                {DAY_LABELS[i]}
               </div>
-              <div className="flex flex-col gap-1">
-                {dayAppts.map((a) => {
-                  const cs = STATUS_CARD[a.status];
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold mx-auto transition-colors ${isToday ? "bg-[#C2410C] text-white" : "text-[#fafafa]"}`}>
+                {day.getDate()}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Scrollable time grid */}
+      <div className="flex overflow-y-auto" style={{ maxHeight: 560 }}>
+        {/* Time column */}
+        <div className="w-14 shrink-0 relative" style={{ height: TOTAL_HEIGHT }}>
+          {HOURS.map(h => (
+            <div key={h} className="absolute right-2 flex items-center" style={{ top: (h - START_HOUR) * HOUR_HEIGHT - 8, height: 16 }}>
+              <span className="font-mono text-[11px] text-[#4B5563]">
+                {String(h).padStart(2, "0")}:00
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Day columns */}
+        <div className="flex-1 grid grid-cols-7 relative" style={{ height: TOTAL_HEIGHT }}>
+          {/* Hour grid lines */}
+          {HOURS.map(h => (
+            <div key={h} className="absolute left-0 right-0 pointer-events-none"
+              style={{ top: (h - START_HOUR) * HOUR_HEIGHT, borderTop: "1px solid rgba(42,42,42,0.18)" }} />
+          ))}
+
+          {/* Now line */}
+          {showNow && (
+            <div className="absolute left-0 right-0 z-20 flex items-center pointer-events-none" style={{ top: nowTop }}>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#C2410C] shrink-0 -ml-1.5" />
+              <div className="flex-1 h-px bg-[#C2410C]" />
+            </div>
+          )}
+
+          {/* Day columns */}
+          {days.map((day, i) => {
+            const iso = toISO(day);
+            const dayAppts = filtered.filter(a => a.date === iso);
+            return (
+              <div key={i} className="relative" style={{ borderLeft: "1px solid rgba(42,42,42,0.15)" }}>
+                {dayAppts.map(a => {
+                  const cs = STATUS[a.status];
+                  const startM = toMin(a.start_time);
+                  const endM = toMin(a.end_time);
+                  const top = (startM - START_HOUR * 60) / 60 * HOUR_HEIGHT;
+                  const height = Math.max((endM - startM) / 60 * HOUR_HEIGHT, 22);
+                  const compact = height < 46;
                   return (
                     <button
                       key={a.id}
                       onClick={() => setSelected(a)}
-                      className="w-full text-left px-2 py-1 rounded-r-[6px] text-xs transition-opacity hover:opacity-75"
-                      style={{ background: cs.bg, borderLeft: `2px solid ${cs.border}`, color: cs.color }}
+                      className="absolute left-0.5 right-0.5 rounded-[6px] text-left overflow-hidden"
+                      style={{ top, height, background: cs.bg, borderLeft: `3px solid ${cs.border}`, transition: "box-shadow 150ms ease" }}
+                      onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 2px 12px ${cs.border}66`; }}
+                      onMouseLeave={e => { e.currentTarget.style.boxShadow = "none"; }}
                     >
-                      <div className="font-medium">{a.start_time.slice(0, 5)}</div>
-                      <div className="truncate">{a.client_name}</div>
+                      <div className="px-1.5 py-1 h-full flex flex-col overflow-hidden gap-0.5">
+                        <p className="text-white text-[11px] font-bold leading-tight truncate">
+                          {a.start_time.slice(0, 5)} {a.client_name}
+                        </p>
+                        {!compact && (
+                          <>
+                            <p className="text-[10px] truncate leading-tight" style={{ color: cs.border }}>{a.service.name}</p>
+                            <p className="text-[#9CA3AF] text-[10px] flex items-center gap-0.5 truncate leading-tight">
+                              <User size={10} className="shrink-0" />{a.professional.name}
+                            </p>
+                          </>
+                        )}
+                      </div>
                     </button>
                   );
                 })}
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-[#2A2A2A]">
-        {LEGEND.map(({ label, status }) => {
-          const cs = STATUS_CARD[status];
-          return (
-            <div key={status} className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-[3px]" style={{ background: cs.bg, border: `1px solid ${cs.border}` }} />
-              <span className="text-[#6B7280] text-xs">{label}</span>
-            </div>
-          );
-        })}
+      {/* Legend */}
+      <div className="bg-[#161616] border border-[#2A2A2A] rounded-[8px] px-5 py-3 mt-4 flex flex-wrap gap-5">
+        {LEGEND.map(({ label, s }) => (
+          <div key={s} className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full" style={{ background: STATUS[s].border }} />
+            <span className="text-[#6B7280] text-xs">{label}</span>
+          </div>
+        ))}
       </div>
 
+      {/* Appointment detail modal */}
       {selected && (
         <Modal open onClose={() => setSelected(null)} title="Detalhes do agendamento">
-          <div className="flex flex-col gap-3 text-sm">
-            {([ ["Cliente", selected.client_name], ["Telefone", selected.client_phone], ["Email", selected.client_email],
-                ["Serviço", selected.service.name], ["Profissional", selected.professional.name],
-                ["Data", new Date(selected.date + "T00:00:00").toLocaleDateString("pt-BR")],
-                ["Horário", `${selected.start_time.slice(0, 5)} — ${selected.end_time.slice(0, 5)}`],
+          <div className="flex flex-col text-sm mb-4">
+            {([
+              ["Cliente",      selected.client_name],
+              ["Telefone",     selected.client_phone],
+              ["Email",        selected.client_email],
+              ["Serviço",      selected.service.name],
+              ["Profissional", selected.professional.name],
+              ["Data",         new Date(selected.date + "T00:00:00").toLocaleDateString("pt-BR")],
+              ["Horário",      `${selected.start_time.slice(0, 5)} — ${selected.end_time.slice(0, 5)}`],
             ] as [string, string][]).map(([k, v]) => (
-              <div key={k} className="flex justify-between">
-                <span className="text-[#6b7280]">{k}</span>
+              <div key={k} className="flex justify-between py-2 border-b last:border-0" style={{ borderColor: "rgba(42,42,42,0.5)" }}>
+                <span className="text-[#6B7280]">{k}</span>
                 <span className="text-[#fafafa] font-medium">{v}</span>
               </div>
             ))}
           </div>
           {selected.status === "scheduled" && (
-            <div className="flex gap-2 mt-4">
-              <Button variant="secondary" size="sm" className="flex-1" loading={updating}
-                onClick={async () => { setUpdating(true); await onUpdateStatus(selected.id, "completed"); setUpdating(false); setSelected(null); }}>
-                Marcar concluído
-              </Button>
-              <Button variant="danger" size="sm" className="flex-1" loading={updating}
-                onClick={async () => { setUpdating(true); await onUpdateStatus(selected.id, "cancelled"); notifyClientOfCancellation(selected.id).catch(console.error); setUpdating(false); setSelected(null); }}>
-                Cancelar
-              </Button>
+            <div className="flex gap-2">
+              <button
+                disabled={updating}
+                className="flex-1 py-2 px-4 rounded-[10px] text-sm font-medium border transition-colors disabled:opacity-50"
+                style={{ background: "#161616", borderColor: "#22C55E", color: "#22C55E" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#142a1e"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "#161616"; }}
+                onClick={async () => { setUpdating(true); await onUpdateStatus(selected.id, "completed"); setUpdating(false); setSelected(null); }}
+              >
+                {updating ? "..." : "Marcar concluído"}
+              </button>
+              <button
+                disabled={updating}
+                className="flex-1 py-2 px-4 rounded-[10px] text-sm font-medium text-white transition-colors disabled:opacity-50"
+                style={{ background: "#C2410C" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#9A3412"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "#C2410C"; }}
+                onClick={async () => { setUpdating(true); await onUpdateStatus(selected.id, "cancelled"); notifyClientOfCancellation(selected.id).catch(console.error); setUpdating(false); setSelected(null); }}
+              >
+                {updating ? "..." : "Cancelar"}
+              </button>
             </div>
           )}
           {selected.status !== "scheduled" && (
-            <div className="mt-4">
-              <span
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
-                style={{ background: STATUS_CARD[selected.status].bg, borderColor: STATUS_CARD[selected.status].border, color: STATUS_CARD[selected.status].color }}
-              >
-                {selected.status === "completed" ? "Concluído" : selected.status === "no_show" ? "Não compareceu" : "Cancelado"}
-              </span>
-            </div>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
+              style={{ background: STATUS[selected.status].bg, borderColor: STATUS[selected.status].border, color: STATUS[selected.status].color }}>
+              {selected.status === "completed" ? "Concluído" : selected.status === "no_show" ? "Não compareceu" : "Cancelado"}
+            </span>
           )}
         </Modal>
       )}

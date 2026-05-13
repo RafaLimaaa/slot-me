@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ExternalLink } from "lucide-react";
 import { Spinner } from "@/components/ui/Spinner";
 import { MetricsBar } from "@/components/dashboard/MetricsBar";
 import { AppointmentList } from "@/components/dashboard/AppointmentList";
@@ -37,8 +36,6 @@ export default function DashboardPage() {
     );
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-
   return (
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Left column */}
@@ -48,15 +45,6 @@ export default function DashboardPage() {
           <p className="text-[#6B7280] text-sm mt-0.5">
             {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}
           </p>
-          <a
-            href={`${appUrl}/${business.slug}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-[#3F3F46] hover:text-[#6B7280] mt-1 transition-colors"
-          >
-            <ExternalLink size={11} />
-            {`${appUrl.replace(/^https?:\/\//, "")}/${business.slug}`}
-          </a>
         </div>
 
         {!metricsLoading && metrics && <MetricsBar metrics={metrics} />}
