@@ -6,22 +6,16 @@ const SEGMENTS = [
     icon: Scissors,
     title: "Barbearias",
     desc: "Gerencie cortes, barbas e múltiplos profissionais em uma única agenda organizada.",
-    bg: "#EBE5D8",
-    border: "#D4CAB8",
   },
   {
     icon: Sparkles,
     title: "Salões de beleza",
     desc: "Múltiplos serviços e especialistas, cada um com sua própria agenda.",
-    bg: "#FFF7ED",
-    border: "#FED7AA",
   },
   {
     icon: Stethoscope,
     title: "Clínicas e consultórios",
     desc: "Agendamentos automáticos sem precisar de recepcionista ou telefonemas.",
-    bg: "#F0FDF4",
-    border: "#BBF7D0",
   },
 ];
 
@@ -39,12 +33,9 @@ export function ForWhoSection() {
         </FadeIn>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {SEGMENTS.map(({ icon: Icon, title, desc, bg, border }, i) => (
+          {SEGMENTS.map(({ icon: Icon, title, desc }, i) => (
             <FadeIn key={title} delay={i * 100}>
-              <div
-                className="rounded-[20px] border p-8 h-full hover:shadow-[0_4px_28px_rgba(194,65,12,0.1)] transition-all duration-200"
-                style={{ background: bg, borderColor: border }}
-              >
+              <div className="rounded-[20px] border border-[#D4CAB8] bg-[#EBE5D8] p-8 h-full hover:shadow-[0_4px_28px_rgba(194,65,12,0.1)] transition-all duration-200">
                 <div className="w-12 h-12 rounded-[12px] bg-white/60 flex items-center justify-center mb-5">
                   <Icon size={24} className="text-[#C2410C]" />
                 </div>
