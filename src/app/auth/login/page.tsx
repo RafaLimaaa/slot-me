@@ -20,6 +20,7 @@ function GoogleIcon() {
 export default function LoginPage() {
   const { signInWithGoogle, loading } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [btnHovered, setBtnHovered] = useState(false);
 
   useEffect(() => {
     const t = requestAnimationFrame(() => setMounted(true));
@@ -128,18 +129,13 @@ export default function LoginPage() {
           <button
             onClick={signInWithGoogle}
             disabled={loading}
-            className="w-full h-12 rounded-[12px] flex items-center justify-center gap-3 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+            onMouseEnter={() => setBtnHovered(true)}
+            onMouseLeave={() => setBtnHovered(false)}
+            className="w-full h-12 rounded-[12px] flex items-center justify-center gap-3 text-sm font-semibold text-white active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
             style={{
-              background: loading
-                ? "#9a3412"
-                : "linear-gradient(135deg, #9a3412, #C2410C, #ea580c)",
+              backgroundColor: btnHovered || loading ? "#9a3412" : "#C2410C",
+              transition: "background-color 200ms ease, transform 100ms ease",
               boxShadow: "0 4px 16px rgba(194,65,12,0.3)",
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) (e.currentTarget as HTMLButtonElement).style.background = "#9a3412";
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) (e.currentTarget as HTMLButtonElement).style.background = "linear-gradient(135deg, #9a3412, #C2410C, #ea580c)";
             }}
           >
             {loading ? (
