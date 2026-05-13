@@ -30,19 +30,19 @@ export default function LoginPage() {
     <div className="min-h-screen flex">
       {/* Left panel — dark, decorative */}
       <div
-        className="hidden lg:flex lg:w-[60%] flex-col bg-[#09090B] relative overflow-x-hidden"
+        className="hidden lg:flex lg:w-[60%] flex-col bg-[#09090B] relative overflow-hidden"
         style={{
           opacity: mounted ? 1 : 0,
           transform: mounted ? "translateY(0)" : "translateY(12px)",
           transition: "opacity 600ms ease-out, transform 600ms ease-out",
         }}
       >
-        {/* Very subtle terracotta glow */}
+        {/* Terracotta radial glow */}
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse 70% 55% at 50% 45%, rgba(194,65,12,0.08), transparent)",
+            background: "radial-gradient(ellipse 70% 55% at 50% 45%, rgba(194,65,12,0.18), transparent)",
           }}
         />
 
@@ -57,33 +57,37 @@ export default function LoginPage() {
         />
 
         {/* Content */}
-        <div className="relative flex flex-col h-full px-12 py-10 min-h-0">
-          {/* Logo centered at top */}
-          <div className="flex justify-center pb-6">
+        <div className="relative flex flex-col h-full px-12 py-10">
+          {/* Logo top-left */}
+          <div>
             <Link href="/" aria-label="SlotMe">
               <Logo size="md" inverted />
             </Link>
           </div>
 
-          {/* Center content — scrollable if needed */}
-          <div className="flex-1 flex flex-col items-center justify-center gap-6 min-h-0 overflow-y-auto">
-            <div className="text-center max-w-[340px] shrink-0">
+          {/* Center content */}
+          <div className="flex-1 flex flex-col items-center justify-center gap-10">
+            <div className="text-center max-w-[340px]">
               <h2 className="text-2xl font-bold text-white tracking-tight leading-snug mb-3">
-                Sua agenda profissional,{" "}
+                Sua agenda profissional,
+                <br />
                 <span className="text-[#C2410C]">pronta agora.</span>
               </h2>
               <p className="text-[#71717A] text-sm leading-relaxed">
-                Crie sua página de agendamentos em minutos e deixe seus clientes agendar sozinhos.
+                Crie sua página de agendamentos em minutos e deixe seus clientes agendarem sozinhos.
               </p>
             </div>
 
-            <div className="shrink-0 py-2">
+            <div
+              style={{ boxShadow: "0 0 40px rgba(194,65,12,0.2)" }}
+              className="rounded-[24px]"
+            >
               <AnimatedCalendarCard />
             </div>
           </div>
 
           {/* Footer */}
-          <p className="text-[#3F3F46] text-xs text-center pt-6 shrink-0">
+          <p className="text-[#3F3F46] text-xs text-center">
             © 2026 SlotMe. Todos os direitos reservados.
           </p>
         </div>
