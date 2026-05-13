@@ -29,7 +29,13 @@ export default function AgendaPage() {
   }
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(194,65,12,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(194,65,12,0.05) 1px, transparent 1px)",
+        backgroundSize: "32px 32px",
+      }}
+    >
       <h1 className="text-xl font-bold text-[#fafafa] mb-5">Agenda semanal</h1>
       <div className="bg-[#161616] border border-[#2A2A2A] rounded-[16px] p-5">
         <WeeklyCalendar

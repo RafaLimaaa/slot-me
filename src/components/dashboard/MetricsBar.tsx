@@ -31,6 +31,7 @@ export function MetricsBar({ metrics }: Props) {
         <div
           key={key}
           className="bg-[#161616] hover:bg-[#1E1E1E] border border-[#2A2A2A] rounded-[12px] p-4 flex flex-col gap-2.5 transition-colors duration-150"
+          style={{ boxShadow: "0 0 0 1px rgba(194,65,12,0.20)" }}
         >
           <div className="flex items-center gap-2">
             <Icon size={15} style={{ color }} />

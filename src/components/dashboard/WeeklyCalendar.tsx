@@ -9,7 +9,8 @@ import type { AppointmentWithDetails, AppointmentStatus, Professional } from "@/
 const DAY_LABELS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
 const START_HOUR = 7;
 const END_HOUR = 21;
-const HOUR_HEIGHT = 64;
+const HOUR_HEIGHT = 96;
+const HALF_HEIGHT = HOUR_HEIGHT / 2;
 const TOTAL_HEIGHT = (END_HOUR - START_HOUR) * HOUR_HEIGHT;
 const HOURS = Array.from({ length: END_HOUR - START_HOUR }, (_, i) => START_HOUR + i);
 
@@ -111,6 +112,7 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
                 borderColor: active ? "#C2410C" : "#2A2A2A",
                 background:  active ? "#1E1E1E"  : "#161616",
                 color:       active ? "#fafafa"  : "#6B7280",
+                boxShadow:   active ? "0 0 0 1px rgba(194,65,12,0.30)" : "none",
               }}
             >
               {prof.photo_url ? (
@@ -133,10 +135,19 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
           const isToday = toISO(day) === todayISO;
           return (
             <div key={i} className="flex-1 text-center py-2">
-              <div className="text-[#6B7280] text-[10px] uppercase font-semibold tracking-wider mb-1">
+              <div
+                className="text-[10px] uppercase font-semibold mb-1"
+                style={{ color: "#6B7280", letterSpacing: "0.08em" }}
+              >
                 {DAY_LABELS[i]}
               </div>
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold mx-auto transition-colors ${isToday ? "bg-[#C2410C] text-white" : "text-[#fafafa]"}`}>
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold mx-auto transition-colors"
+                style={{
+                  background: isToday ? "#C2410C" : "transparent",
+                  color: isToday ? "#F5F0E8" : "#fafafa",
+                }}
+              >
                 {day.getDate()}
               </div>
             </div>
@@ -161,15 +172,21 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
         <div className="flex-1 grid grid-cols-7 relative" style={{ height: TOTAL_HEIGHT }}>
           {/* Hour grid lines */}
           {HOURS.map(h => (
-            <div key={h} className="absolute left-0 right-0 pointer-events-none"
-              style={{ top: (h - START_HOUR) * HOUR_HEIGHT, borderTop: "1px solid rgba(42,42,42,0.18)" }} />
+            <div key={`h-${h}`} className="absolute left-0 right-0 pointer-events-none"
+              style={{ top: (h - START_HOUR) * HOUR_HEIGHT, borderTop: "1px solid rgba(255,255,255,0.04)" }} />
+          ))}
+
+          {/* Half-hour grid lines */}
+          {HOURS.map(h => (
+            <div key={`hh-${h}`} className="absolute left-0 right-0 pointer-events-none"
+              style={{ top: (h - START_HOUR) * HOUR_HEIGHT + HALF_HEIGHT, borderTop: "1px solid rgba(255,255,255,0.02)" }} />
           ))}
 
           {/* Now line */}
           {showNow && (
-            <div className="absolute left-0 right-0 z-20 flex items-center pointer-events-none" style={{ top: nowTop }}>
-              <span className="w-2.5 h-2.5 rounded-full bg-[#C2410C] shrink-0 -ml-1.5" />
-              <div className="flex-1 h-px bg-[#C2410C]" />
+            <div className="absolute left-0 right-0 z-20 flex items-center pointer-events-none" style={{ top: nowTop, opacity: 0.7 }}>
+              <span className="w-[7px] h-[7px] rounded-full bg-[#C2410C] shrink-0 -ml-[3.5px]" />
+              <div className="flex-1" style={{ height: 1, background: "#C2410C" }} />
             </div>
           )}
 
@@ -184,25 +201,35 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
                   const startM = toMin(a.start_time);
                   const endM = toMin(a.end_time);
                   const top = (startM - START_HOUR * 60) / 60 * HOUR_HEIGHT;
-                  const height = Math.max((endM - startM) / 60 * HOUR_HEIGHT, 22);
-                  const compact = height < 46;
+                  const height = Math.max((endM - startM) / 60 * HOUR_HEIGHT, 24);
+                  const compact = height < 56;
+                  const borderHex = cs.border;
                   return (
                     <button
                       key={a.id}
                       onClick={() => setSelected(a)}
                       className="absolute left-0.5 right-0.5 rounded-[6px] text-left overflow-hidden"
-                      style={{ top, height, background: cs.bg, borderLeft: `3px solid ${cs.border}`, transition: "box-shadow 150ms ease" }}
-                      onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 2px 12px ${cs.border}66`; }}
-                      onMouseLeave={e => { e.currentTarget.style.boxShadow = "none"; }}
+                      style={{ top, height, background: cs.bg, borderLeft: `3px solid ${borderHex}` }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.boxShadow = `0 0 0 1px ${borderHex}99`;
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.boxShadow = "none";
+                      }}
                     >
-                      <div className="px-1.5 py-1 h-full flex flex-col overflow-hidden gap-0.5">
-                        <p className="text-white text-[11px] font-bold leading-tight truncate">
-                          {a.start_time.slice(0, 5)} {a.client_name}
+                      <div className="px-1.5 py-1 h-full flex flex-col overflow-hidden gap-px">
+                        <p style={{ color: cs.border, fontFamily: "monospace", fontSize: 10, lineHeight: 1.3, fontWeight: 400 }}>
+                          {a.start_time.slice(0, 5)}
+                        </p>
+                        <p className="font-bold leading-tight truncate" style={{ color: "#ffffff", fontSize: 12 }}>
+                          {a.client_name}
                         </p>
                         {!compact && (
                           <>
-                            <p className="text-[10px] truncate leading-tight" style={{ color: cs.border }}>{a.service.name}</p>
-                            <p className="text-[#9CA3AF] text-[10px] flex items-center gap-0.5 truncate leading-tight">
+                            <p className="truncate leading-tight" style={{ color: cs.border, opacity: 0.8, fontSize: 11 }}>
+                              {a.service.name}
+                            </p>
+                            <p className="flex items-center gap-0.5 truncate leading-tight" style={{ color: "#9CA3AF", fontSize: 10 }}>
                               <User size={10} className="shrink-0" />{a.professional.name}
                             </p>
                           </>
@@ -221,8 +248,8 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
       <div className="bg-[#161616] border border-[#2A2A2A] rounded-[8px] px-5 py-3 mt-4 flex flex-wrap gap-5">
         {LEGEND.map(({ label, s }) => (
           <div key={s} className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ background: STATUS[s].border }} />
-            <span className="text-[#6B7280] text-xs">{label}</span>
+            <span className="w-2 h-2 rounded-full" style={{ background: STATUS[s].border }} />
+            <span style={{ color: "#9CA3AF", fontSize: 12 }}>{label}</span>
           </div>
         ))}
       </div>
@@ -240,9 +267,9 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
               ["Data",         new Date(selected.date + "T00:00:00").toLocaleDateString("pt-BR")],
               ["Horário",      `${selected.start_time.slice(0, 5)} — ${selected.end_time.slice(0, 5)}`],
             ] as [string, string][]).map(([k, v]) => (
-              <div key={k} className="flex justify-between py-2 border-b last:border-0" style={{ borderColor: "rgba(42,42,42,0.5)" }}>
-                <span className="text-[#6B7280]">{k}</span>
-                <span className="text-[#fafafa] font-medium">{v}</span>
+              <div key={k} className="flex justify-between py-2 border-b last:border-0" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+                <span style={{ color: "#6B7280", fontSize: 13 }}>{k}</span>
+                <span style={{ color: "#fafafa", fontWeight: 500, fontSize: 13 }}>{v}</span>
               </div>
             ))}
           </div>
@@ -260,8 +287,8 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
               </button>
               <button
                 disabled={updating}
-                className="flex-1 py-2 px-4 rounded-[10px] text-sm font-medium text-white transition-colors disabled:opacity-50"
-                style={{ background: "#C2410C" }}
+                className="flex-1 py-2 px-4 rounded-[10px] text-sm font-medium transition-colors disabled:opacity-50"
+                style={{ background: "#C2410C", color: "#F5F0E8" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#9A3412"; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "#C2410C"; }}
                 onClick={async () => { setUpdating(true); await onUpdateStatus(selected.id, "cancelled"); notifyClientOfCancellation(selected.id).catch(console.error); setUpdating(false); setSelected(null); }}

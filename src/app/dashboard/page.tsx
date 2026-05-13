@@ -37,7 +37,14 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
+    <div
+      className="flex flex-col lg:flex-row gap-6"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(194,65,12,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(194,65,12,0.05) 1px, transparent 1px)",
+        backgroundSize: "32px 32px",
+      }}
+    >
       {/* Left column */}
       <div className="flex-1 min-w-0 flex flex-col gap-5">
         <div>
@@ -47,7 +54,25 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {!metricsLoading && metrics && <MetricsBar metrics={metrics} />}
+        {!metricsLoading && metrics && (
+          <div className="relative">
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                width: 700,
+                height: 240,
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                background: "radial-gradient(ellipse at center, rgba(194,65,12,0.20) 0%, transparent 70%)",
+                zIndex: 0,
+              }}
+            />
+            <div className="relative z-10">
+              <MetricsBar metrics={metrics} />
+            </div>
+          </div>
+        )}
 
         <AppointmentChart appointments={allAppts} />
 
