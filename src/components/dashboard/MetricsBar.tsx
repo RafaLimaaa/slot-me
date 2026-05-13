@@ -5,47 +5,38 @@ interface Props {
   metrics: DashboardMetrics;
 }
 
+const CARDS = [
+  { key: "appointmentsToday", label: "Agendamentos hoje", icon: Calendar, color: "#C2410C" },
+  { key: "revenueToday", label: "Receita prevista", icon: DollarSign, color: "#D97706" },
+  { key: "weeklyOccupancyRate", label: "Ocupação semanal", icon: TrendingUp, color: "#3D6B4F" },
+  { key: "nextAppointment", label: "Próximo agendamento", icon: Clock, color: "#6B7280" },
+] as const;
+
 export function MetricsBar({ metrics }: Props) {
   const brl = (v: number) =>
     v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-  const cards = [
-    {
-      label: "Agendamentos hoje",
-      value: String(metrics.appointmentsToday),
-      icon: Calendar,
-    },
-    {
-      label: "Receita prevista",
-      value: brl(metrics.revenueToday),
-      icon: DollarSign,
-    },
-    {
-      label: "Ocupação semanal",
-      value: `${metrics.weeklyOccupancyRate}%`,
-      icon: TrendingUp,
-    },
-    {
-      label: "Próximo agendamento",
-      value: metrics.nextAppointment
-        ? `${metrics.nextAppointment.start_time.slice(0, 5)} — ${metrics.nextAppointment.client_name}`
-        : "Nenhum hoje",
-      icon: Clock,
-    },
-  ];
+  function value(key: (typeof CARDS)[number]["key"]): string {
+    if (key === "appointmentsToday") return String(metrics.appointmentsToday);
+    if (key === "revenueToday") return brl(metrics.revenueToday);
+    if (key === "weeklyOccupancyRate") return `${metrics.weeklyOccupancyRate}%`;
+    return metrics.nextAppointment
+      ? `${metrics.nextAppointment.start_time.slice(0, 5)} — ${metrics.nextAppointment.client_name}`
+      : "Nenhum hoje";
+  }
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {cards.map(({ label, value, icon: Icon }) => (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      {CARDS.map(({ key, label, icon: Icon, color }) => (
         <div
-          key={label}
-          className="bg-[#18181b] border border-[#27272a] rounded-[12px] p-4 flex flex-col gap-2"
+          key={key}
+          className="bg-[#161616] hover:bg-[#1E1E1E] border border-[#2A2A2A] rounded-[12px] p-4 flex flex-col gap-2.5 transition-colors duration-150"
         >
-          <div className="flex items-center gap-2 text-[#a1a1aa]">
-            <Icon size={15} />
-            <span className="text-xs">{label}</span>
+          <div className="flex items-center gap-2">
+            <Icon size={15} style={{ color }} />
+            <span className="text-[#6B7280] text-xs">{label}</span>
           </div>
-          <span className="text-[#fafafa] font-semibold text-lg leading-none">{value}</span>
+          <span className="text-[#fafafa] font-semibold text-lg leading-none">{value(key)}</span>
         </div>
       ))}
     </div>

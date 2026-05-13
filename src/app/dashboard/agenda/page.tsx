@@ -30,8 +30,8 @@ export default function AgendaPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[#fafafa] mb-6">Agenda semanal</h1>
-      <div className="bg-[#18181b] border border-[#27272a] rounded-[12px] p-5">
+      <h1 className="text-xl font-bold text-[#fafafa] mb-5">Agenda semanal</h1>
+      <div className="bg-[#161616] border border-[#2A2A2A] rounded-[16px] p-5">
         <WeeklyCalendar
           appointments={appointments}
           professionals={professionals}
