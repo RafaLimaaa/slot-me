@@ -152,23 +152,25 @@ export function BookingFlow({
     <div className="min-h-screen">
       {/* Left panel — fixed on desktop, block on mobile */}
       <div
-        className="bg-[#1A1A1A] relative overflow-hidden
+        className="bg-[#0C0C0C] relative overflow-hidden
           lg:fixed lg:left-0 lg:top-0 lg:bottom-0 lg:w-[420px]
           lg:flex lg:flex-col lg:justify-center"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(194,65,12,0.06) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(194,65,12,0.06) 1px, transparent 1px)
+            linear-gradient(rgba(194,65,12,0.07) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(194,65,12,0.07) 1px, transparent 1px)
           `,
           backgroundSize: "32px 32px",
         }}
       >
-        {/* Glow radial */}
+        {/* Glow radial — centrado verticalmente, ocupa 60% da altura */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute left-0 w-full pointer-events-none"
           style={{
+            top: "20%",
+            height: "60%",
             background:
-              "radial-gradient(ellipse at center, rgba(194,65,12,0.15) 0%, transparent 65%)",
+              "radial-gradient(ellipse at center, rgba(194,65,12,0.18) 0%, transparent 65%)",
           }}
         />
 
@@ -226,12 +228,17 @@ export function BookingFlow({
 
           {/* Desktop: summary */}
           <div className="hidden lg:block">
-            <div className="border-t border-white/10 my-5" />
+            <div className="border-t border-white/[0.08] my-5" />
             {summaryItems.map(({ icon: Icon, label, value }) => (
               <div key={label} className="flex items-start gap-3 py-2.5">
-                <Icon size={15} className="text-[#C2410C] mt-0.5 shrink-0" />
+                <Icon
+                  size={15}
+                  className={`mt-0.5 shrink-0 ${value ? "text-[#C2410C]" : "text-[#4B5563]"}`}
+                />
                 <div className="flex-1 min-w-0 text-left">
-                  <p className="text-[#9CA3AF] text-xs">{label}</p>
+                  <p className={`text-xs ${value ? "text-[#9CA3AF]" : "text-[#4B5563]"}`}>
+                    {label}
+                  </p>
                   <p
                     className={`text-sm font-medium truncate ${
                       value ? "text-white" : "text-[#4B5563]"

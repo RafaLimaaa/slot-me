@@ -77,7 +77,8 @@ export default function ConfiguracoesPage() {
     { id: "bloqueios",     icon: CalendarOff, label: "Bloqueios",     complete: null,                                        ref: bloqueiosRef },
   ] as const;
 
-  const completedCount = sections.filter((s) => s.complete === true).length;
+  const progressSections = sections.filter((s) => s.id !== "bloqueios");
+  const completedCount = progressSections.filter((s) => s.complete === true).length;
 
   return (
     <div
@@ -153,7 +154,14 @@ export default function ConfiguracoesPage() {
         {/* Sidebar direita */}
         <div
           className="hidden lg:flex flex-col gap-3"
-          style={{ width: 240, flexShrink: 0, position: "sticky", top: 24 }}
+          style={{
+            width: 240,
+            flexShrink: 0,
+            position: "sticky",
+            top: 24,
+            alignSelf: "flex-start",
+            height: "fit-content",
+          }}
         >
           {/* Card 1 — Progresso */}
           <div style={{ background: "#161616", border: "1px solid #2A2A2A", borderRadius: 10, padding: 14 }}>
@@ -166,15 +174,15 @@ export default function ConfiguracoesPage() {
             <div style={{ background: "#1E1E1E", height: 4, borderRadius: 4, marginBottom: 6 }}>
               <div style={{
                 background: "#22C55E", height: 4, borderRadius: 4,
-                width: `${(completedCount / 6) * 100}%`,
+                width: `${(completedCount / 5) * 100}%`,
                 transition: "width 300ms ease",
               }} />
             </div>
             <p style={{ fontSize: 10, color: "#6B7280", marginBottom: 12 }}>
-              {completedCount} de 6 seções completas
+              {completedCount} de 5 seções completas
             </p>
             <div className="flex flex-col gap-0.5">
-              {sections.map((s) => (
+              {progressSections.map((s) => (
                 <div key={s.id} className="flex items-center justify-between py-1">
                   <div className="flex items-center gap-2">
                     <span style={{

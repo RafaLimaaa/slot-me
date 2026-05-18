@@ -16,7 +16,7 @@ export function ServiceList({ services, slug }: Props) {
           <Link
             key={s.id}
             href={`/${slug}/agendar?service_id=${s.id}`}
-            className="block bg-white border border-[#E8E0D5] rounded-[12px] p-4
+            className="block bg-[#FAF7F2] border border-[#E8E0D5] rounded-[12px] p-4
               cursor-pointer transition-all duration-200
               hover:border-[#C2410C] hover:shadow-[0_0_0_2px_rgba(194,65,12,0.08)]"
           >

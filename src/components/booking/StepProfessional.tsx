@@ -22,10 +22,10 @@ export function StepProfessional({ professionals, selectedServiceId, selected, o
           <button
             key={p.id}
             onClick={() => onSelect(p)}
-            className={`relative text-left bg-white rounded-[12px] p-4 flex items-center gap-3 transition-all duration-150 cursor-pointer
+            className={`relative text-left rounded-[12px] p-4 flex items-center gap-3 transition-all duration-150 cursor-pointer
               ${active
                 ? "border-2 border-[#C2410C] bg-[rgba(194,65,12,0.04)]"
-                : "border border-[#E8E0D5] hover:border-[#C2410C] hover:shadow-[0_0_0_2px_rgba(194,65,12,0.08)]"
+                : "bg-[#FAF7F2] border border-[#E8E0D5] hover:border-[#C2410C] hover:shadow-[0_0_0_2px_rgba(194,65,12,0.08)]"
               }`}
           >
             {active && (
