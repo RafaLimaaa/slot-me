@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, User } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { notifyClientOfCancellation } from "@/app/actions";
 import type { AppointmentWithDetails, AppointmentStatus, Professional } from "@/types";
 
 const DAY_LABELS = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
-const START_HOUR = 7;
-const END_HOUR = 21;
-const HOUR_HEIGHT = 96;
+const START_HOUR = 8;
+const END_HOUR = 20;
+const HOUR_HEIGHT = 48;
 const HALF_HEIGHT = HOUR_HEIGHT / 2;
 const TOTAL_HEIGHT = (END_HOUR - START_HOUR) * HOUR_HEIGHT;
 const HOURS = Array.from({ length: END_HOUR - START_HOUR }, (_, i) => START_HOUR + i);
@@ -63,6 +63,7 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
     const n = new Date();
     return n.getHours() * 60 + n.getMinutes();
   });
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -70,6 +71,12 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
       setNowMin(n.getHours() * 60 + n.getMinutes());
     }, 60000);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (gridRef.current) {
+      gridRef.current.scrollTop = HOUR_HEIGHT;
+    }
   }, []);
 
   const days = weekDays(weekOffset);
@@ -84,7 +91,20 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
   );
 
   return (
-    <div>
+    <div style={{
+      background: "#161616",
+      border: "1px solid rgba(194,65,12,0.25)",
+      boxShadow: "0 0 0 1px rgba(194,65,12,0.10), 0 0 32px rgba(194,65,12,0.08)",
+      borderRadius: 12,
+      padding: "20px 20px 16px",
+    }}>
+      <style>{`
+        .agenda-grid::-webkit-scrollbar { width: 4px; }
+        .agenda-grid::-webkit-scrollbar-track { background: transparent; }
+        .agenda-grid::-webkit-scrollbar-thumb { background: rgba(194,65,12,0.3); border-radius: 4px; }
+        .agenda-grid::-webkit-scrollbar-thumb:hover { background: rgba(194,65,12,0.6); }
+      `}</style>
+
       {/* Week navigation */}
       <div className="flex items-center gap-2 mb-4">
         <button onClick={() => setWeekOffset(w => w - 1)} className="p-1.5 rounded-[8px] hover:bg-[#1E1E1E] transition-colors">
@@ -128,7 +148,7 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
         })}
       </div>
 
-      {/* Day headers (outside scroll) */}
+      {/* Day headers */}
       <div className="flex border-b border-[#2A2A2A]/20">
         <div className="w-14 shrink-0" />
         {days.map((day, i) => {
@@ -156,12 +176,25 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
       </div>
 
       {/* Scrollable time grid */}
-      <div className="flex overflow-y-auto" style={{ maxHeight: 560 }}>
+      <div
+        ref={gridRef}
+        className="agenda-grid flex"
+        style={{
+          height: "calc(100vh - 260px)",
+          overflowY: "auto",
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(194,65,12,0.3) transparent",
+        } as React.CSSProperties}
+      >
         {/* Time column */}
         <div className="w-14 shrink-0 relative" style={{ height: TOTAL_HEIGHT }}>
           {HOURS.map(h => (
-            <div key={h} className="absolute right-2 flex items-center" style={{ top: (h - START_HOUR) * HOUR_HEIGHT - 8, height: 16 }}>
-              <span className="font-mono text-[11px] text-[#4B5563]">
+            <div
+              key={h}
+              className="absolute right-2"
+              style={{ top: (h - START_HOUR) * HOUR_HEIGHT, paddingTop: 4 }}
+            >
+              <span style={{ fontFamily: "monospace", fontSize: 11, color: "#4B5563", lineHeight: 1, display: "block" }}>
                 {String(h).padStart(2, "0")}:00
               </span>
             </div>
@@ -173,18 +206,18 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
           {/* Hour grid lines */}
           {HOURS.map(h => (
             <div key={`h-${h}`} className="absolute left-0 right-0 pointer-events-none"
-              style={{ top: (h - START_HOUR) * HOUR_HEIGHT, borderTop: "1px solid rgba(255,255,255,0.04)" }} />
+              style={{ top: (h - START_HOUR) * HOUR_HEIGHT, borderBottom: "1px solid rgba(255,255,255,0.06)" }} />
           ))}
 
           {/* Half-hour grid lines */}
           {HOURS.map(h => (
             <div key={`hh-${h}`} className="absolute left-0 right-0 pointer-events-none"
-              style={{ top: (h - START_HOUR) * HOUR_HEIGHT + HALF_HEIGHT, borderTop: "1px solid rgba(255,255,255,0.02)" }} />
+              style={{ top: (h - START_HOUR) * HOUR_HEIGHT + HALF_HEIGHT, borderBottom: "1px solid rgba(255,255,255,0.02)" }} />
           ))}
 
           {/* Now line */}
           {showNow && (
-            <div className="absolute left-0 right-0 z-20 flex items-center pointer-events-none" style={{ top: nowTop, opacity: 0.7 }}>
+            <div className="absolute left-0 right-0 flex items-center pointer-events-none" style={{ top: nowTop, opacity: 0.7, zIndex: 1 }}>
               <span className="w-[7px] h-[7px] rounded-full bg-[#C2410C] shrink-0 -ml-[3.5px]" />
               <div className="flex-1" style={{ height: 1, background: "#C2410C" }} />
             </div>
@@ -195,45 +228,37 @@ export function WeeklyCalendar({ appointments, professionals, onUpdateStatus }: 
             const iso = toISO(day);
             const dayAppts = filtered.filter(a => a.date === iso);
             return (
-              <div key={i} className="relative" style={{ borderLeft: "1px solid rgba(42,42,42,0.15)" }}>
+              <div
+                key={i}
+                className="relative"
+                style={{
+                  borderRight: i < 6 ? "1px solid rgba(255,255,255,0.04)" : "none",
+                  background: i % 2 === 0 ? "rgba(255,255,255,0.01)" : "transparent",
+                }}
+              >
                 {dayAppts.map(a => {
                   const cs = STATUS[a.status];
                   const startM = toMin(a.start_time);
                   const endM = toMin(a.end_time);
                   const top = (startM - START_HOUR * 60) / 60 * HOUR_HEIGHT;
                   const height = Math.max((endM - startM) / 60 * HOUR_HEIGHT, 24);
-                  const compact = height < 56;
                   const borderHex = cs.border;
                   return (
                     <button
                       key={a.id}
                       onClick={() => setSelected(a)}
                       className="absolute left-0.5 right-0.5 rounded-[6px] text-left overflow-hidden"
-                      style={{ top, height, background: cs.bg, borderLeft: `3px solid ${borderHex}` }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.boxShadow = `0 0 0 1px ${borderHex}99`;
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.boxShadow = "none";
-                      }}
+                      style={{ top, height, background: cs.bg, borderLeft: `3px solid ${borderHex}`, zIndex: 2 }}
+                      onMouseEnter={e => { e.currentTarget.style.boxShadow = `0 0 0 1px ${borderHex}99`; }}
+                      onMouseLeave={e => { e.currentTarget.style.boxShadow = "none"; }}
                     >
-                      <div className="px-1.5 py-1 h-full flex flex-col overflow-hidden gap-px">
-                        <p style={{ color: cs.border, fontFamily: "monospace", fontSize: 10, lineHeight: 1.3, fontWeight: 400 }}>
-                          {a.start_time.slice(0, 5)}
+                      <div className="px-1.5 py-0.5 h-full flex flex-col overflow-hidden">
+                        <p className="leading-tight" style={{ color: "#ffffff", fontSize: 10, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <span style={{ color: cs.border, fontFamily: "monospace" }}>{a.start_time.slice(0, 5)}</span>{" "}{a.client_name}
                         </p>
-                        <p className="font-bold leading-tight truncate" style={{ color: "#ffffff", fontSize: 12 }}>
-                          {a.client_name}
+                        <p className="leading-tight" style={{ color: cs.border, opacity: 0.8, fontSize: 10, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {a.service.name}
                         </p>
-                        {!compact && (
-                          <>
-                            <p className="truncate leading-tight" style={{ color: cs.border, opacity: 0.8, fontSize: 11 }}>
-                              {a.service.name}
-                            </p>
-                            <p className="flex items-center gap-0.5 truncate leading-tight" style={{ color: "#9CA3AF", fontSize: 10 }}>
-                              <User size={10} className="shrink-0" />{a.professional.name}
-                            </p>
-                          </>
-                        )}
                       </div>
                     </button>
                   );

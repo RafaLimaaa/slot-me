@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { LayoutDashboard } from "lucide-react";
 import { Spinner } from "@/components/ui/Spinner";
 import { MetricsBar } from "@/components/dashboard/MetricsBar";
 import { AppointmentList } from "@/components/dashboard/AppointmentList";
@@ -47,11 +48,24 @@ export default function DashboardPage() {
     >
       {/* Left column */}
       <div className="flex-1 min-w-0 flex flex-col gap-5">
-        <div>
-          <h1 className="text-xl font-bold text-[#fafafa]">{business.name}</h1>
-          <p className="text-[#6B7280] text-sm mt-0.5">
-            {new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" })}
-          </p>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 24 }}>
+          <div style={{
+            width: 40, height: 40, borderRadius: 10,
+            background: "rgba(194,65,12,0.15)",
+            border: "1px solid rgba(194,65,12,0.30)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+          }}>
+            <LayoutDashboard size={20} color="#C2410C" />
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <h1 style={{ fontSize: 20, fontWeight: 500, color: "#fff", margin: 0, lineHeight: 1.2 }}>
+              Painel
+            </h1>
+            <p style={{ fontSize: 12, color: "#6B7280", margin: 0 }}>
+              {business.name} / Painel
+            </p>
+          </div>
         </div>
 
         {!metricsLoading && metrics && (

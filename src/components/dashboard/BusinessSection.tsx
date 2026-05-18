@@ -107,15 +107,14 @@ export function BusinessSection({ business, onRefetch }: Props) {
   ].filter(Boolean).join(" — ") || "—";
 
   return (
-    <section className="bg-[#18181b] border border-[#27272a] rounded-[12px] p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[#fafafa] font-semibold">Dados do negócio</h2>
-        {!editing && (
+    <div>
+      {!editing && (
+        <div className="flex justify-end mb-4">
           <button onClick={startEdit} className="flex items-center gap-1.5 text-xs text-[#C2410C] hover:opacity-70 transition-opacity">
             <Pencil size={13} /> Editar
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {editing ? (
         <div className="flex flex-col gap-3">
@@ -159,6 +158,6 @@ export function BusinessSection({ business, onRefetch }: Props) {
           ))}
         </div>
       )}
-    </section>
+    </div>
   );
 }

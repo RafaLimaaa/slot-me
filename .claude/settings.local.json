@@ -23,7 +23,8 @@
       "Bash(node -e \"const pkg = require\\('./node_modules/lucide-react/package.json'\\); console.log\\(pkg.version\\);\")",
       "Bash(node -e \"const {Sparkles,Scissors,Stethoscope,Scissors:S2} = require\\('lucide-react'\\); console.log\\('Sparkles:', !!Sparkles, 'Scissors:', !!Scissors, 'Stethoscope:', !!Stethoscope\\);\")",
       "Bash(grep -oE \"\\(#[0-9A-Fa-f]{6}|rgba\\\\\\(37,99,235[^\\)]+\\\\\\)|blue-[0-9]+\\)\")",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\Samsung\\\\OneDrive\\\\Desktop\\\\ProjetosDev\\\\slotme\\\\src\")"
     ]
   }
 }

@@ -38,37 +38,34 @@ export function ImageUploadSection({ business, onRefetch }: Props) {
   ];
 
   return (
-    <section className="bg-[#18181b] border border-[#27272a] rounded-[12px] p-5">
-      <h2 className="text-[#fafafa] font-semibold mb-4">Fotos</h2>
-      <div className="grid grid-cols-2 gap-4">
-        {uploads.map(({ type, label, currentUrl, ref }) => (
-          <div key={type} className="flex flex-col gap-2">
-            <p className="text-xs text-[#a1a1aa]">{label}</p>
-            <div
-              onClick={() => ref.current?.click()}
-              className="relative flex items-center justify-center border border-dashed border-[#27272a] rounded-[10px] h-28 cursor-pointer hover:border-[#C2410C] transition-colors overflow-hidden group"
-            >
-              {currentUrl ? (
-                <img src={currentUrl} alt={label} className="w-full h-full object-cover" />
-              ) : (
-                <ImagePlus size={24} className="text-[#a1a1aa] group-hover:text-[#C2410C] transition-colors" />
-              )}
-              {uploading === type && (
-                <div className="absolute inset-0 bg-[#09090b]/80 flex items-center justify-center">
-                  <span className="text-xs text-[#fafafa]">Enviando...</span>
-                </div>
-              )}
-              {currentUrl && (
-                <div className="absolute inset-0 bg-[#09090b]/0 group-hover:bg-[#09090b]/50 transition-all flex items-center justify-center">
-                  <span className="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">Trocar foto</span>
-                </div>
-              )}
-            </div>
-            <input ref={ref} type="file" accept="image/*" className="sr-only"
-              onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(type, f); e.target.value = ""; }} />
+    <div className="grid grid-cols-2 gap-4">
+      {uploads.map(({ type, label, currentUrl, ref }) => (
+        <div key={type} className="flex flex-col gap-2">
+          <p className="text-xs text-[#a1a1aa]">{label}</p>
+          <div
+            onClick={() => ref.current?.click()}
+            className="relative flex items-center justify-center border border-dashed border-[#2A2A2A] rounded-[10px] h-28 cursor-pointer hover:border-[#C2410C] transition-colors overflow-hidden group"
+          >
+            {currentUrl ? (
+              <img src={currentUrl} alt={label} className="w-full h-full object-cover" />
+            ) : (
+              <ImagePlus size={24} className="text-[#a1a1aa] group-hover:text-[#C2410C] transition-colors" />
+            )}
+            {uploading === type && (
+              <div className="absolute inset-0 bg-[#0C0C0C]/80 flex items-center justify-center">
+                <span className="text-xs text-[#fafafa]">Enviando...</span>
+              </div>
+            )}
+            {currentUrl && (
+              <div className="absolute inset-0 bg-[#0C0C0C]/0 group-hover:bg-[#0C0C0C]/50 transition-all flex items-center justify-center">
+                <span className="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">Trocar foto</span>
+              </div>
+            )}
           </div>
-        ))}
-      </div>
-    </section>
+          <input ref={ref} type="file" accept="image/*" className="sr-only"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(type, f); e.target.value = ""; }} />
+        </div>
+      ))}
+    </div>
   );
 }

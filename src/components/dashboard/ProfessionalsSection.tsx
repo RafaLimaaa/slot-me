@@ -24,7 +24,7 @@ function formatPhone(value: string): string {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
-const inputCls = "w-full rounded-[10px] border border-[#27272a] bg-[#09090b] px-3 py-2 text-sm text-[#fafafa] outline-none focus:border-[#C2410C] placeholder:text-[#6b7280]";
+const inputCls = "w-full rounded-[10px] border border-[#2A2A2A] bg-[#0C0C0C] px-3 py-2 text-sm text-[#fafafa] outline-none focus:border-[#C2410C] placeholder:text-[#4B5563]";
 
 function toggle(ids: string[], id: string) {
   return ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id];
@@ -39,7 +39,7 @@ function ServiceCheckboxes({ services, selectedIds, onChange }: {
         const checked = selectedIds.includes(s.id);
         return (
           <label key={s.id} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border cursor-pointer transition-all
-            ${checked ? "bg-[#C2410C] text-white border-[#C2410C]" : "border-[#27272a] text-[#a1a1aa] hover:border-[#C2410C]"}`}>
+            ${checked ? "bg-[#C2410C] text-white border-[#C2410C]" : "border-[#2A2A2A] text-[#a1a1aa] hover:border-[#C2410C]"}`}>
             <input type="checkbox" className="sr-only" checked={checked}
               onChange={() => onChange(toggle(selectedIds, s.id))} />
             {s.name}
@@ -55,7 +55,7 @@ function ProfForm({ form, services, onChange, onSave, onCancel, saving }: {
   onSave: () => void; onCancel: () => void; saving: boolean;
 }) {
   return (
-    <div className="bg-[#09090b] rounded-[10px] p-3 flex flex-col gap-2">
+    <div className="bg-[#0C0C0C] rounded-[10px] p-3 flex flex-col gap-2">
       <input className={inputCls} placeholder="Nome" value={form.name}
         onChange={(e) => onChange({ ...form, name: e.target.value })} />
       <input className={inputCls} placeholder="Especialidade (opcional)" value={form.specialty}
@@ -126,9 +126,8 @@ export function ProfessionalsSection({ businessId, services, professionals, onRe
   }
 
   return (
-    <section className="bg-[#18181b] border border-[#27272a] rounded-[12px] p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[#fafafa] font-semibold">Profissionais</h2>
+    <div>
+      <div className="flex justify-end mb-4">
         <button onClick={() => { setAdding((v) => !v); setAddForm(EMPTY); }}
           className="flex items-center gap-1.5 text-xs text-[#C2410C] hover:opacity-70 transition-opacity">
           <Plus size={13} /> Adicionar profissional
@@ -175,6 +174,6 @@ export function ProfessionalsSection({ businessId, services, professionals, onRe
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }

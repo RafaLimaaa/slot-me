@@ -82,8 +82,7 @@ export function BlockedPeriodsSection({ professionals }: { professionals: Prof[]
   };
 
   return (
-    <section className="bg-[#18181b] border border-[#27272a] rounded-[12px] p-5">
-      <h2 className="text-[#fafafa] font-semibold mb-4">Bloquear horário</h2>
+    <div>
       <form onSubmit={handleBlock} className="flex flex-col gap-3">
         <Select
           label="Profissional"
@@ -107,7 +106,7 @@ export function BlockedPeriodsSection({ professionals }: { professionals: Prof[]
         <div className="mt-5 flex flex-col gap-2">
           <p className="text-xs text-[#a1a1aa] font-medium uppercase tracking-wide">Bloqueios cadastrados</p>
           {blocks.map((b) => (
-            <div key={b.id} className="flex items-center justify-between bg-[#09090b] rounded-[10px] px-3 py-2 text-sm">
+            <div key={b.id} className="flex items-center justify-between bg-[#0C0C0C] rounded-[10px] px-3 py-2 text-sm">
               <div className="flex flex-col gap-0.5 min-w-0">
                 <span className="text-[#fafafa] font-medium truncate">
                   {b.professional?.name} — {new Date(b.date + "T00:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
@@ -128,6 +127,6 @@ export function BlockedPeriodsSection({ professionals }: { professionals: Prof[]
           ))}
         </div>
       )}
-    </section>
+    </div>
   );
 }

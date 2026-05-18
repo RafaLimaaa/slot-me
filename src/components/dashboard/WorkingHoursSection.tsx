@@ -80,8 +80,7 @@ export function WorkingHoursSection({ professionals, workingHours, onRefetch }: 
   const hasEnabled = hours.some((h) => h.enabled);
 
   return (
-    <section className="bg-[#18181b] border border-[#27272a] rounded-[12px] p-5 flex flex-col gap-4">
-      <h2 className="text-[#fafafa] font-semibold">Horários de funcionamento</h2>
+    <div className="flex flex-col gap-4">
       <Select
         label="Profissional"
         value={selectedId}
@@ -131,7 +130,7 @@ export function WorkingHoursSection({ professionals, workingHours, onRefetch }: 
           </Button>
         </>
       )}
-    </section>
+    </div>
   );
 }
 
@@ -141,7 +140,7 @@ function TInput({ value, onChange }: { value: string; onChange: (v: string) => v
       type="time"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-[#09090b] border border-[#27272a] rounded-[8px] px-2 py-1 text-[#fafafa] text-sm"
+      className="bg-[#0C0C0C] border border-[#2A2A2A] rounded-[8px] px-2 py-1 text-[#fafafa] text-sm"
     />
   );
 }

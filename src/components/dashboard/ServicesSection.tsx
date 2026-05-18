@@ -21,7 +21,7 @@ function parsePrice(v: string) {
   return parseFloat(v.replace(/\./g, "").replace(",", ".")) || 0;
 }
 
-const inputCls = "w-full rounded-[10px] border border-[#27272a] bg-[#09090b] px-3 py-2 text-sm text-[#fafafa] outline-none focus:border-[#C2410C] placeholder:text-[#6b7280]";
+const inputCls = "w-full rounded-[10px] border border-[#2A2A2A] bg-[#0C0C0C] px-3 py-2 text-sm text-[#fafafa] outline-none focus:border-[#C2410C] placeholder:text-[#4B5563]";
 
 interface Props { businessId: string; services: Service[]; onRefetch: () => Promise<void>; }
 type Form = { name: string; price: string; duration_minutes: number };
@@ -31,7 +31,7 @@ function ServiceForm({ form, onChange, onSave, onCancel, saving }: {
   form: Form; onChange: (f: Form) => void; onSave: () => void; onCancel: () => void; saving: boolean;
 }) {
   return (
-    <div className="bg-[#09090b] rounded-[10px] p-3 flex flex-col gap-2">
+    <div className="bg-[#0C0C0C] rounded-[10px] p-3 flex flex-col gap-2">
       <input className={inputCls} placeholder="Nome do serviço" value={form.name}
         onChange={(e) => onChange({ ...form, name: e.target.value })} />
       <div className="grid grid-cols-2 gap-2">
@@ -92,9 +92,8 @@ export function ServicesSection({ businessId, services, onRefetch }: Props) {
   const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
   return (
-    <section className="bg-[#18181b] border border-[#27272a] rounded-[12px] p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[#fafafa] font-semibold">Serviços</h2>
+    <div>
+      <div className="flex justify-end mb-4">
         <button onClick={() => { setAdding((v) => !v); setAddForm(EMPTY); }}
           className="flex items-center gap-1.5 text-xs text-[#C2410C] hover:opacity-70 transition-opacity">
           <Plus size={13} /> Adicionar serviço
@@ -131,6 +130,6 @@ export function ServicesSection({ businessId, services, onRefetch }: Props) {
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }

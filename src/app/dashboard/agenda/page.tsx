@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { CalendarDays } from "lucide-react";
 import { Spinner } from "@/components/ui/Spinner";
 import { WeeklyCalendar } from "@/components/dashboard/WeeklyCalendar";
 import { useAuth } from "@/hooks/useAuth";
@@ -36,14 +37,30 @@ export default function AgendaPage() {
         backgroundSize: "32px 32px",
       }}
     >
-      <h1 className="text-xl font-bold text-[#fafafa] mb-5">Agenda semanal</h1>
-      <div className="bg-[#161616] border border-[#2A2A2A] rounded-[16px] p-5">
-        <WeeklyCalendar
-          appointments={appointments}
-          professionals={professionals}
-          onUpdateStatus={updateStatus}
-        />
+      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 24 }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: 10,
+          background: "rgba(194,65,12,0.15)",
+          border: "1px solid rgba(194,65,12,0.30)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0,
+        }}>
+          <CalendarDays size={20} color="#C2410C" />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <h1 style={{ fontSize: 20, fontWeight: 500, color: "#fff", margin: 0, lineHeight: 1.2 }}>
+            Agenda semanal
+          </h1>
+          <p style={{ fontSize: 12, color: "#6B7280", margin: 0 }}>
+            {business.name} / Agenda
+          </p>
+        </div>
       </div>
+      <WeeklyCalendar
+        appointments={appointments}
+        professionals={professionals}
+        onUpdateStatus={updateStatus}
+      />
     </div>
   );
 }
