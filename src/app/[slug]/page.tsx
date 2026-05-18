@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { BusinessHeader } from "@/components/public/BusinessHeader";
@@ -6,7 +7,6 @@ import { ServiceList } from "@/components/public/ServiceList";
 import { ProfessionalList } from "@/components/public/ProfessionalList";
 import { MapEmbed } from "@/components/public/MapEmbed";
 import { PublicFooter } from "@/components/layout/PublicFooter";
-import { Button } from "@/components/ui/Button";
 
 interface Props {
   params: { slug: string };
@@ -67,22 +67,23 @@ export default async function BusinessPage({ params }: Props) {
   ]);
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <BusinessHeader business={business} />
+    <div className="min-h-screen bg-[#F5F0E8]">
+      {/* BusinessHeader extends full width (cover is edge-to-edge) */}
+      <BusinessHeader business={business} />
 
-        <div className="flex flex-col gap-10 mt-8">
+      <div className="max-w-3xl mx-auto px-4 pb-32 md:pb-16">
+        <div className="flex flex-col gap-10 mt-6">
           {(services?.length ?? 0) === 0 && (professionals?.length ?? 0) === 0 ? (
             <div className="text-center py-12">
               <p className="text-[#374151] font-medium">Em breve</p>
-              <p className="text-[#6b7280] text-sm mt-1">
+              <p className="text-[#6B7280] text-sm mt-1">
                 Este negócio ainda está configurando seus serviços. Volte em breve.
               </p>
             </div>
           ) : (
             <>
               {(services?.length ?? 0) > 0 && (
-                <ServiceList services={services ?? []} />
+                <ServiceList services={services ?? []} slug={params.slug} />
               )}
               {(professionals?.length ?? 0) > 0 && (
                 <ProfessionalList professionals={professionals ?? []} />
@@ -96,15 +97,32 @@ export default async function BusinessPage({ params }: Props) {
 
         {/* CTA desktop */}
         <div className="hidden md:flex justify-center mt-10">
-          <Button href={`/${params.slug}/agendar`} size="lg">Agendar agora</Button>
+          <Link
+            href={`/${params.slug}/agendar`}
+            className="inline-flex items-center justify-center font-semibold rounded-[12px] px-8 py-3.5 text-base
+              bg-[#C2410C] text-[#F5F0E8] hover:bg-[#9A3412] transition-colors duration-200
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C] focus-visible:ring-offset-2"
+          >
+            Agendar agora →
+          </Link>
         </div>
       </div>
 
       <PublicFooter />
 
       {/* CTA mobile fixo */}
-      <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t border-[#f1f5f9] p-4 safe-bottom">
-        <Button href={`/${params.slug}/agendar`} size="lg" className="w-full">Agendar agora</Button>
+      <div
+        className="fixed bottom-0 left-0 right-0 md:hidden z-10 px-4 pb-6 pt-3"
+        style={{ background: "linear-gradient(to top, #F5F0E8 70%, transparent)" }}
+      >
+        <Link
+          href={`/${params.slug}/agendar`}
+          className="flex items-center justify-center w-full font-semibold rounded-[12px] py-3.5 text-base
+            bg-[#C2410C] text-[#F5F0E8] hover:bg-[#9A3412] transition-colors duration-200
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C]"
+        >
+          Agendar agora →
+        </Link>
       </div>
     </div>
   );

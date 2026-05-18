@@ -1,26 +1,37 @@
+import Link from "next/link";
 import { Clock } from "lucide-react";
 import type { Service } from "@/types";
 
-export function ServiceList({ services }: { services: Service[] }) {
+interface Props {
+  services: Service[];
+  slug: string;
+}
+
+export function ServiceList({ services, slug }: Props) {
   return (
     <div>
-      <h2 className="text-lg font-semibold text-[#09090b] mb-3">Serviços</h2>
+      <h2 className="text-lg font-semibold text-[#1A1A1A] mb-3">Serviços</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {services.map((s) => (
-          <div
+          <Link
             key={s.id}
-            className="border border-[#e2e8f0] rounded-[12px] p-4 flex items-center justify-between hover:shadow-[0_0_0_1px_#C2410C,0_0_16px_rgba(194,65,12,0.1)] transition-shadow duration-200"
+            href={`/${slug}/agendar?service_id=${s.id}`}
+            className="block bg-white border border-[#E8E0D5] rounded-[12px] p-4
+              cursor-pointer transition-all duration-200
+              hover:border-[#C2410C] hover:shadow-[0_0_0_2px_rgba(194,65,12,0.08)]"
           >
-            <div>
-              <p className="text-[#09090b] font-medium text-sm">{s.name}</p>
-              <p className="flex items-center gap-1 text-xs text-[#6b7280] mt-0.5">
-                <Clock size={11} /> {s.duration_minutes} min
-              </p>
+            <p className="text-[#1A1A1A] font-medium" style={{ fontSize: 15 }}>
+              {s.name}
+            </p>
+            <div className="flex items-center justify-between mt-2">
+              <span className="flex items-center gap-1 text-[#6B7280]" style={{ fontSize: 12 }}>
+                <Clock size={12} /> {s.duration_minutes} min
+              </span>
+              <span className="font-semibold text-[#C2410C]" style={{ fontSize: 16 }}>
+                {s.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+              </span>
             </div>
-            <span className="text-[#09090b] font-semibold text-sm">
-              {s.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-            </span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

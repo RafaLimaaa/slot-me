@@ -39,12 +39,14 @@ export function StepConfirmation({ form, onChangeClient, onConfirm, loading }: P
   const canConfirm = !!form.clientName && isPhoneValid && isEmailValid;
 
   const nameError = attempted && !form.clientName ? "Informe seu nome." : undefined;
-  const phoneError = (attempted || form.clientPhone.length > 0) && !isPhoneValid
-    ? "Informe um telefone válido com 10 ou 11 dígitos."
-    : undefined;
-  const emailError = (attempted || form.clientEmail.length > 0) && !isEmailValid
-    ? "Informe um email válido."
-    : undefined;
+  const phoneError =
+    (attempted || form.clientPhone.length > 0) && !isPhoneValid
+      ? "Informe um telefone válido com 10 ou 11 dígitos."
+      : undefined;
+  const emailError =
+    (attempted || form.clientEmail.length > 0) && !isEmailValid
+      ? "Informe um email válido."
+      : undefined;
 
   function handleConfirm() {
     setAttempted(true);
@@ -54,20 +56,26 @@ export function StepConfirmation({ form, onChangeClient, onConfirm, loading }: P
   return (
     <div className="flex flex-col md:flex-row gap-6">
       {/* Resumo */}
-      <div className="flex-1 bg-[#f8fafc] rounded-[12px] p-4 self-start">
-        <p className="text-sm font-semibold text-[#09090b] mb-3">Resumo</p>
+      <div className="flex-1 bg-white border border-[#E8E0D5] rounded-[12px] p-4 self-start">
+        <p className="text-sm font-semibold text-[#1A1A1A] mb-3">Resumo</p>
         {[
           ["Serviço", `${form.service?.name} — ${form.service ? brl(form.service.price) : ""}`],
           ["Profissional", form.professional?.name],
           ["Data", date],
           ["Horário", form.time],
           ["Duração", `${form.service?.duration_minutes} min`],
-        ].map(([k, v]) => v && (
-          <div key={k} className="flex justify-between text-sm py-1.5 border-b border-[#e2e8f0] last:border-0">
-            <span className="text-[#6b7280]">{k}</span>
-            <span className="text-[#09090b] font-medium text-right">{v}</span>
-          </div>
-        ))}
+        ].map(
+          ([k, v]) =>
+            v && (
+              <div
+                key={k}
+                className="flex justify-between text-sm py-1.5 border-b border-[#F5F0E8] last:border-0"
+              >
+                <span className="text-[#9CA3AF]">{k}</span>
+                <span className="text-[#1A1A1A] font-medium text-right">{v}</span>
+              </div>
+            )
+        )}
       </div>
 
       {/* Formulário */}

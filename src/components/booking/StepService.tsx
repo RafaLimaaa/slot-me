@@ -1,4 +1,4 @@
-import { Clock } from "lucide-react";
+import { Clock, Check } from "lucide-react";
 import type { Service } from "@/types";
 
 interface Props {
@@ -16,18 +16,25 @@ export function StepService({ services, selected, onSelect }: Props) {
           <button
             key={s.id}
             onClick={() => onSelect(s)}
-            className={`text-left border rounded-[12px] p-4 transition-all duration-150
+            className={`relative text-left bg-white rounded-[12px] p-4 transition-all duration-150 cursor-pointer
               ${active
-                ? "border-[#C2410C] shadow-[0_0_0_1px_#C2410C]"
-                : "border-[#e2e8f0] hover:border-[#fdba74]"
+                ? "border-2 border-[#C2410C] bg-[rgba(194,65,12,0.04)]"
+                : "border border-[#E8E0D5] hover:border-[#C2410C] hover:shadow-[0_0_0_2px_rgba(194,65,12,0.08)]"
               }`}
           >
-            <p className="font-medium text-[#09090b] text-sm">{s.name}</p>
+            {active && (
+              <div className="absolute top-3 right-3">
+                <Check size={16} className="text-[#C2410C]" />
+              </div>
+            )}
+            <p className="font-medium text-[#1A1A1A] pr-6" style={{ fontSize: 15 }}>
+              {s.name}
+            </p>
             <div className="flex items-center justify-between mt-2">
-              <span className="flex items-center gap-1 text-xs text-[#6b7280]">
-                <Clock size={11} /> {s.duration_minutes} min
+              <span className="flex items-center gap-1 text-[#6B7280]" style={{ fontSize: 12 }}>
+                <Clock size={12} /> {s.duration_minutes} min
               </span>
-              <span className="font-semibold text-sm text-[#09090b]">
+              <span className="font-semibold text-[#C2410C]" style={{ fontSize: 16 }}>
                 {s.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
               </span>
             </div>

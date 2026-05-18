@@ -25,18 +25,19 @@ export function StepDateTime({
 
   return (
     <div className="flex flex-col gap-6">
-      <Calendar
-        selected={selectedDate}
-        onSelect={onSelectDate}
-      />
+      <div className="bg-white border border-[#E8E0D5] rounded-[12px] p-4 w-fit">
+        <Calendar selected={selectedDate} onSelect={onSelectDate} />
+      </div>
 
       {selectedDate && (
         <div>
-          <p className="text-sm font-medium text-[#09090b] mb-3">Horários disponíveis</p>
+          <p className="text-sm font-medium text-[#1A1A1A] mb-3">Horários disponíveis</p>
           {loading ? (
-            <div className="flex justify-center py-4"><Spinner size={20} /></div>
+            <div className="flex justify-center py-4">
+              <Spinner size={20} />
+            </div>
           ) : slots.length === 0 ? (
-            <p className="text-sm text-[#6b7280] text-center py-4">
+            <p className="text-sm text-[#6B7280] text-center py-4">
               Sem horários disponíveis neste dia.
             </p>
           ) : (
@@ -47,8 +48,8 @@ export function StepDateTime({
                   onClick={() => onSelectTime(slot)}
                   className={`py-2 rounded-[10px] text-sm font-medium transition-all duration-150
                     ${selectedTime === slot
-                      ? "bg-[#C2410C] text-white shadow-[0_0_0_1px_#C2410C]"
-                      : "border border-[#e2e8f0] text-[#09090b] hover:border-[#C2410C] hover:text-[#C2410C]"
+                      ? "bg-[#C2410C] text-[#F5F0E8]"
+                      : "bg-white border border-[#E8E0D5] text-[#1A1A1A] hover:border-[#C2410C] hover:text-[#C2410C]"
                     }`}
                 >
                   {slot}
