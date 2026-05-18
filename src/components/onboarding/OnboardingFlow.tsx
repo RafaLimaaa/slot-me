@@ -37,6 +37,16 @@ export function OnboardingFlow({ userId }: { userId: string }) {
     setSaving(true);
     setSaveError(null);
 
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      const { data: refreshed } = await supabase.auth.refreshSession();
+      if (!refreshed.session) {
+        setSaveError("Sessão expirada. Faça login novamente.");
+        setSaving(false);
+        return;
+      }
+    }
+
     const { data: business, error: bizError } = await supabase
       .from("businesses")
       .insert({
