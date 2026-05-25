@@ -25,7 +25,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!authLoading && !bizLoading && !business) {
-      router.replace("/dashboard/onboarding");
+      router.replace("/onboarding");
     }
   }, [authLoading, bizLoading, business, router]);
 

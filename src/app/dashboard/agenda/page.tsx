@@ -17,7 +17,7 @@ export default function AgendaPage() {
 
   useEffect(() => {
     if (!authLoading && !bizLoading && !business) {
-      router.replace("/dashboard/onboarding");
+      router.replace("/onboarding");
     }
   }, [authLoading, bizLoading, business, router]);
 

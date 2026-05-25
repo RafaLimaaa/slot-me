@@ -32,7 +32,7 @@ export default function ConfiguracoesPage() {
   const [activeSection, setActiveSection] = useState("fotos");
 
   useEffect(() => {
-    if (!authLoading && !loading && !business) router.replace("/dashboard/onboarding");
+    if (!authLoading && !loading && !business) router.replace("/onboarding");
   }, [authLoading, loading, business, router]);
 
   useEffect(() => {
