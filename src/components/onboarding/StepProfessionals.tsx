@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+import { Plus, Trash2, Loader2 } from "lucide-react";
 import type { ProfessionalFormData, ServiceFormData } from "@/types";
 
 interface Props {
@@ -22,6 +20,19 @@ function formatPhone(value: string): string {
   if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
+
+const NUMERIC_KEYS = ["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight"];
+function onlyDigits(e: React.KeyboardEvent) {
+  if (NUMERIC_KEYS.includes(e.key)) return;
+  if (!/^\d$/.test(e.key)) e.preventDefault();
+}
+
+const inputCls =
+  "w-full bg-[#FAF7F2] border border-[#E8E0D5] rounded-[10px] px-[14px] py-[11px] text-[14px] text-[#1A1A1A] outline-none " +
+  "placeholder:text-[#C4BAB0] transition-[border-color,box-shadow] duration-200 " +
+  "focus:border-[#C2410C] focus:ring-[3px] focus:ring-[rgba(194,65,12,0.10)] focus:ring-offset-0";
+
+const labelCls = "block text-[12px] font-medium text-[#6B7280] tracking-[0.04em] uppercase mb-1.5";
 
 export function StepProfessionals({ services, initial, onFinish, onBack, loading }: Props) {
   const [professionals, setProfessionals] = useState<ProfessionalFormData[]>(
@@ -61,33 +72,68 @@ export function StepProfessionals({ services, initial, onFinish, onBack, loading
   return (
     <div className="flex flex-col gap-4">
       {professionals.map((p, i) => (
-        <div key={i} className="bg-[#f8fafc] rounded-[12px] p-4 flex flex-col gap-3">
+        <div
+          key={i}
+          style={{
+            background: "#FAF7F2",
+            border: "1px solid #E8E0D5",
+            borderRadius: 12,
+            padding: 16,
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+          }}
+        >
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#09090b]">Profissional {i + 1}</span>
+            <span className="text-[13px] font-medium text-[#6B7280] uppercase tracking-[0.04em]">
+              Profissional {i + 1}
+            </span>
             {professionals.length > 1 && (
-              <button onClick={() => remove(i)} className="text-[#DC2626] hover:opacity-70 transition-opacity">
+              <button
+                type="button"
+                onClick={() => remove(i)}
+                className="text-[#DC2626] hover:opacity-70 transition-opacity"
+              >
                 <Trash2 size={16} />
               </button>
             )}
           </div>
-          <Input
-            placeholder="Nome"
-            value={p.name}
-            onChange={(e) => update(i, "name", e.target.value)}
-          />
-          <Input
-            placeholder="Especialidade (opcional)"
-            value={p.specialty}
-            onChange={(e) => update(i, "specialty", e.target.value)}
-          />
-          <Input
-            placeholder="Telefone (opcional)"
-            inputMode="numeric"
-            value={p.phone}
-            onChange={(e) => update(i, "phone", formatPhone(e.target.value))}
-          />
+
           <div>
-            <p className="text-xs font-medium text-[#6b7280] mb-2">Serviços que realiza</p>
+            <label className={labelCls}>Nome</label>
+            <input
+              className={inputCls}
+              placeholder="Nome do profissional"
+              value={p.name}
+              onChange={(e) => update(i, "name", e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className={labelCls}>Especialidade (opcional)</label>
+            <input
+              className={inputCls}
+              placeholder="Ex: Barbeiro, Cabeleireiro"
+              value={p.specialty}
+              onChange={(e) => update(i, "specialty", e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className={labelCls}>Telefone (opcional)</label>
+            <input
+              className={inputCls}
+              placeholder="(00) 00000-0000"
+              inputMode="numeric"
+              maxLength={15}
+              value={p.phone}
+              onKeyDown={onlyDigits}
+              onChange={(e) => update(i, "phone", formatPhone(e.target.value))}
+            />
+          </div>
+
+          <div>
+            <p className={labelCls}>Serviços que realiza</p>
             <div className="flex flex-wrap gap-2">
               {services.map((s, si) => {
                 const key = `svc-${si}`;
@@ -95,11 +141,12 @@ export function StepProfessionals({ services, initial, onFinish, onBack, loading
                 return (
                   <label
                     key={si}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs border cursor-pointer transition-all
-                      ${checked
+                    className={[
+                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] border cursor-pointer transition-all",
+                      checked
                         ? "bg-[#C2410C] text-white border-[#C2410C]"
-                        : "border-[#e2e8f0] text-[#6b7280] hover:border-[#C2410C] hover:text-[#C2410C]"
-                      }`}
+                        : "border-[#E8E0D5] text-[#6B7280] hover:border-[#C2410C] hover:text-[#C2410C]",
+                    ].join(" ")}
                   >
                     <input
                       type="checkbox"
@@ -117,23 +164,47 @@ export function StepProfessionals({ services, initial, onFinish, onBack, loading
       ))}
 
       <button
+        type="button"
         onClick={add}
-        className="flex items-center gap-2 text-sm text-[#C2410C] hover:opacity-70 transition-opacity"
+        className="flex items-center gap-2 text-[13px] font-medium text-[#C2410C] hover:opacity-70 transition-opacity"
       >
         <Plus size={16} /> Adicionar profissional
       </button>
 
       <div className="flex gap-3 mt-2">
-        <Button type="button" variant="secondary" onClick={onBack} className="flex-1">Voltar</Button>
-        <Button
+        <button
           type="button"
-          disabled={!canFinish}
-          loading={loading}
-          onClick={() => onFinish(professionals)}
-          className="flex-1"
+          onClick={onBack}
+          disabled={loading}
+          className={[
+            "flex-1 py-[14px] px-[14px] text-[15px] font-medium text-[#6B7280]",
+            "rounded-[12px] border border-[#E8E0D5] bg-transparent",
+            "hover:border-[#C2410C] hover:text-[#C2410C]",
+            "disabled:opacity-50 disabled:cursor-not-allowed",
+            "transition-all duration-200",
+          ].join(" ")}
         >
-          Concluir
-        </Button>
+          Voltar
+        </button>
+        <button
+          type="button"
+          disabled={!canFinish || loading}
+          onClick={() => onFinish(professionals)}
+          className={[
+            "flex-1 flex items-center justify-center gap-2",
+            "text-[15px] font-medium text-[#F5F0E8] rounded-[12px] py-[14px] px-[14px]",
+            "bg-[radial-gradient(ellipse_at_50%_40%,#D95518_0%,#9A3412_60%,#7C2A10_100%)]",
+            "border border-[rgba(120,30,5,0.6)]",
+            "shadow-[0_2px_8px_rgba(120,30,5,0.35),inset_0_1px_0_rgba(255,200,150,0.20),inset_0_-1px_0_rgba(0,0,0,0.20)]",
+            "hover:shadow-[0_6px_24px_rgba(120,30,5,0.50),inset_0_1px_0_rgba(255,200,150,0.25)]",
+            "hover:-translate-y-px active:translate-y-0",
+            "disabled:opacity-50 disabled:cursor-not-allowed",
+            "transition-all duration-200",
+          ].join(" ")}
+        >
+          {loading && <Loader2 size={16} className="animate-spin" />}
+          {loading ? "Salvando..." : "Concluir"}
+        </button>
       </div>
     </div>
   );
